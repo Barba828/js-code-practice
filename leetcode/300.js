@@ -56,28 +56,29 @@ var moveZeroes = function (nums) {
 
 /**
  * 287. 寻找重复数
+ * 该方法修改了原数组不可取
  * @param {number[]} nums
  * @return {number}
  */
 var findDuplicate = function (nums) {
-  // let p = 0;
-  // while (true) {
-  //   //以查询则break
-  //   if (nums[p] === true) {
-  //     break;
-  //   } else {
-  //     //查询第p位，并赋值位true表示已查，询下一个查询nums[p]位
-  //     let temp = nums[p];
-  //     nums[p] = true;
-  //     p = temp;
-  //   }
-  // }
-  // return p;
+  let p = 0;
+  while (true) {
+    //以查询则break
+    if (nums[p] === true) {
+      break;
+    } else {
+      //查询第p位，并赋值位true表示已查，询下一个查询nums[p]位
+      let temp = nums[p];
+      nums[p] = true;
+      p = temp;
+    }
+  }
+  return p;
 };
 
 /**
  * 287. 寻找重复数
- * 快门指针解法
+ * 快慢指针解法
  * @param {number[]} nums
  * @return {number}
  */
