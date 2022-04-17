@@ -1,4 +1,4 @@
-import { List, ListNode } from "../structure/index.js";
+import { ArrayToList, ListNode } from "../structure/index.js";
 
 /**
  * 151. 翻转字符串里的单词
@@ -164,8 +164,34 @@ var getIntersectionNode = function (headA, headB) {
 
 // console.log(
 //   "getIntersectionNode===",
-//   getIntersectionNode(List([1, 3, 5, 7, 9, 11]), List([2, 4, 8, 10]))
+//   getIntersectionNode(ArrayToList([1, 3, 5, 7, 9, 11]), ArrayToList([2, 4, 8, 10]))
 // );
+
+/**
+ * 162. 寻找峰值
+ * @tag 二分法
+ * @param {number[]} nums
+ * @return {number}
+ */
+var findPeakElement = function (nums) {
+  let left = 0
+  let right = nums.length - 1
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2)
+    if (nums[mid + 1] > nums[mid]) {
+      left = mid + 1
+    } else {
+      right = mid
+    }
+  }
+  return left
+};
+
+console.log(
+  "findPeakElement===",
+  findPeakElement([1, 2, 1, 3, 5, 6, 4]),
+  findPeakElement([1, 2, 3, 1])
+);
 
 /**
  * 169. 多数元素

@@ -1,4 +1,4 @@
-import { List, ListNode, Tree, TreeNode } from "../structure/index.js";
+import { ArrayToList, ListNode, ArrayToTree, TreeNode } from "../structure/index.js";
 
 /**
  * 53. 最大子序和
@@ -46,7 +46,7 @@ var maxSubArray = function (nums) {
   return getInfo(nums, 0, nums.length - 1).mSum;
 };
 
-console.log("ans----", maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
+// console.log("ans----maxSubArray", maxSubArray([-2, 1, -3, 4, -1, 2, 1, -5, 4]));
 
 /**
  * 54. 螺旋矩阵
@@ -250,6 +250,94 @@ var minDistance = function (word1, word2) {
 };
 
 // console.log("===", minDistance("intention", "execution"));
+
+/**
+ * 74. 搜索二维矩阵
+ * 编写一个高效的算法来判断 m x n 矩阵中，是否存在一个目标值。该矩阵具有如下特性：
+ *  每行中的整数从左到右按升序排列
+ *  每行的第一个整数大于前一行的最后一个整数。
+ * 
+ *  从矩阵左下或者右上出发，看成一颗二叉树解决，复杂度O(m+n)
+ * @param {number[][]} matrix
+ * @param {number} target
+ * @return {boolean}
+ */
+var searchMatrix = function (matrix, target) {
+  let m = matrix.length - 1;
+  let n = 0;
+
+  while (m >= 0 && n < matrix[0].length) {
+    const temp = matrix[m][n];
+    if (target < temp) {
+      m--
+    } else if (target > temp) {
+      n++
+    } else {
+      return true
+    }
+  }
+  return false
+};
+
+/**
+ * 74. 搜索二维矩阵 2
+ * 二分法 复杂度 log(m) + log(n)，二维两次二分搜索即可
+ */
+var searchMatrix = function (matrix, target) {
+  let top = 0
+  let bottom = matrix.length - 1
+  const width = matrix[0].length
+  while (top !== bottom) {
+    const mid = Math.floor((top + bottom) / 2)
+    if (target <= matrix[mid][width - 1]) {
+      bottom = mid
+    } else {
+      top = mid + 1
+    }
+  }
+
+  let left = 0;
+  let right = width - 1;
+  while (left !== right) {
+    const mid = Math.floor((left + right) / 2)
+    if (target <= matrix[top][mid]) {
+      right = mid
+    } else {
+      left = mid + 1
+    }
+  }
+
+  return matrix[top][left] === target
+};
+
+// console.log("searchMatrix===", searchMatrix([[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]], 3));
+
+/**
+ * 82. 删除排序链表中的重复元素 II
+ * 给定一个已排序的链表的头 head ， 删除原始链表中所有重复数字的节点，只留下不同的数字 。返回 已排序的链表
+ * @tag 双指针
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var deleteDuplicates = function (head) {
+  const dummy = new ListNode(0, head);
+
+  let cur = dummy;
+  while (cur.next && cur.next.next) {
+    // 记录重复节点值，while 消除
+    if (cur.next.val === cur.next.next.val) {
+      const duplicateVal = cur.next.val;
+      while (cur.next && cur.next.val === duplicateVal) {
+        cur.next = cur.next.next;
+      }
+    } else {
+      cur = cur.next;
+    }
+  }
+  return dummy.next;
+};
+
+console.log("deleteDuplicates===", deleteDuplicates(ArrayToList([1, 3, 3, 3, 4, 5])).toString())
 
 /**
  * 91. 解码方法
@@ -469,4 +557,4 @@ var isValidBST = function (root) {
   return isValidChildTree(root, -Infinity, Infinity);
 };
 
-// console.log("isValidBST===", isValidBST(Tree([2, 1, 3, 0, 3])));
+// console.log("isValidBST===", isValidBST(ArrayToTree([2, 1, 3, 0, 3])));

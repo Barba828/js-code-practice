@@ -1,4 +1,4 @@
-import { Tree } from "../structure/Tree.js";
+import { ArrayToTree } from "../structure/ArrayToTree.js";
 
 /**
  * 300. 最长递增子序列
@@ -186,7 +186,7 @@ var coinChange = function (coins, amount) {
 /**
  * 337. 打家劫舍 III
  * 和之前的打家劫舍相似，用长度为2的数组表示选中该节点或是子节点
- * @param {Tree} root
+ * @param {ArrayToTree} root
  * @return {number}
  */
 var rob = function (root) {
@@ -202,4 +202,4 @@ var rob = function (root) {
   return Math.max(...search(root));
 };
 
-console.log("rob===", rob(Tree([3, 2, 3, null, 3, null, 1])));
+console.log("rob===", rob(ArrayToTree([3, 2, 3, null, 3, null, 1])));

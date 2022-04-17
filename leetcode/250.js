@@ -1,4 +1,4 @@
-import { List, ListNode, Tree, TreeNode } from "../structure/index.js";
+import { ArrayToList, ListNode, ArrayToTree, TreeNode } from "../structure/index.js";
 
 /**
  * 207. 课程表
@@ -163,7 +163,7 @@ var reverseList = function (head) {
   return pre;
 };
 
-console.log(reverseList(List([1, 2, 3, 4, 5])).toString());
+console.log(reverseList(ArrayToList([1, 2, 3, 4, 5])).toString());
 
 /**
  * 215. 数组中的第K个最大元素
@@ -241,7 +241,7 @@ var invertTree = function (root) {
   invertTree(root.right);
   return root;
 };
-// const tree = Tree([2, 1, 3]);
+// const tree = ArrayToTree([2, 1, 3]);
 // invertTree(tree);
 // console.log("invertTree===" + tree);
 
@@ -278,7 +278,7 @@ var isPalindrome = function (head) {
   return true;
 };
 
-// console.log("isPalindrome===" + isPalindrome(List([1, 2, 3, 3, 2, 1])));
+// console.log("isPalindrome===" + isPalindrome(ArrayToList([1, 2, 3, 3, 2, 1])));
 
 /**
  * @param {TreeNode} root
@@ -305,7 +305,7 @@ var lowestCommonAncestor = function (root, p, q) {
   return null;
 };
 
-// const tree = Tree([3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]);
+// const tree = ArrayToTree([3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]);
 // console.log(
 //   "lowestCommonAncestor===" +
 //     lowestCommonAncestor(tree, tree.get(5), tree.get(4))

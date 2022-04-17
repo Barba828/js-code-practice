@@ -1,4 +1,4 @@
-import { List, ListNode, Tree, TreeNode } from "../structure/index.js";
+import { ArrayToList, ListNode, ArrayToTree, TreeNode } from "../structure/index.js";
 
 /**
  * 4. 寻找两个正序数组的中位数
@@ -78,7 +78,6 @@ var isPalindrome = function (x) {
     reverse = reverse * 10 + (temp % 10);
     temp = Math.floor(temp / 10);
   }
-  console.log(temp, reverse);
   return reverse === temp || Math.floor(reverse / 10) === temp;
 };
 
@@ -154,48 +153,50 @@ var maxArea = function (height) {
 
 /**
  * 15. 三数之和
+ * @tag 双指针
  * 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
+ * 
+ * 遍历第一个数字给定一个 index ，剩下双指针为第二三个数字 left，right 表示从 index + 1 到 length - 1，复杂度 O(n2)
  * @param {number[]} nums
  * @return {number[][]}
  */
 var threeSum = function (nums) {
-  let ans = [];
-  let length = nums.length;
-  nums.sort((a, b) => {
-    return a - b;
-  });
+  nums.sort((a, b) => a - b)
+  const res = []
 
-  for (let i = 0; i < length; i++) {
-    if (nums[i] > 0) return ans;
-    if (nums[i] === nums[i - 1]) continue;
-    let l = i + 1;
-    let r = length - 1;
+  for (let index = 0; index < nums.length; index++) {
+    if (nums[index] > 0) return res
+    if (nums[index] === nums[index - 1]) continue
+    let left = index + 1
+    let right = nums.length - 1
 
-    while (l < r) {
-      if (nums[i] + nums[l] > 0) break;
-
-      let temp = nums[i] + nums[l] + nums[r];
-
+    while (left < right) {
+      const temp = nums[index] + nums[left] + nums[right]
       if (temp === 0) {
-        ans.push([nums[i], nums[l], nums[r]]);
-        while (l < r && nums[l] === nums[l + 1]) {
-          ++l;
+        res.push([nums[index], nums[left], nums[right]])
+        while (nums[left] === nums[left - 1]) {
+          left++
         }
-        while (l < r && nums[r] === nums[r - 1]) {
-          --r;
+        while (nums[right] === nums[right + 1]) {
+          right--
         }
-        ++l;
-      } else if (temp < 0) {
-        ++l;
+      }
+
+      if (temp < 0) {
+        left++
+      } else if (temp > 0) {
+        right--
       } else {
-        --r;
+        left++
+        right--
       }
     }
   }
-  return ans;
-};
-
-// console.log(threeSum([-1, 0, 1, 2, -1, -4]));
+  return res
+}
+console.log("threeSum====", threeSum([-2, 0, 1, 1, 2]));
+// console.log("threeSum====", threeSum([-1, 0, 1, 2, -1, -4]));
+// console.log("threeSum====", threeSum([-4, 0, 1, 2, 2, 3]));
 
 /**
  * 17. 电话号码的字母组合
@@ -300,7 +301,6 @@ var mergeTwoLists = function (l1, l2) {
       temp.next = l1;
       break;
     }
-    // console.log(l1.val, l2.val);
     if (l1.val < l2.val) {
       temp.next = l1;
       l1 = l1.next;
@@ -315,7 +315,7 @@ var mergeTwoLists = function (l1, l2) {
 
 // console.log(
 //   "===",
-//   mergeTwoLists(List([1, 2, 4]), List([1, 3, 4])).toString()
+//   mergeTwoLists(ArrayToList([1, 2, 4]), ArrayToList([1, 3, 4])).toString()
 // );
 
 /**
@@ -385,7 +385,7 @@ var mergeKLists = function (lists) {
 
 // console.log(
 //   "===",
-//   mergeKLists([List([1, 4, 5]), List([1, 3, 4]), List([2, 6])]).toString()
+//   mergeKLists([ArrayToList([1, 4, 5]), ArrayToList([1, 3, 4]), ArrayToList([2, 6])]).toString()
 // );
 
 /**
@@ -585,14 +585,12 @@ var nextPermutation = function (nums) {
 var search = function (nums, target) {
   const find = (start, end) => {
     if (target === nums[start]) {
-      console.log(start);
       return start;
     } else if (end < start) {
       return -1;
     }
 
     let mid = parseInt((end + start) / 2);
-    console.log(start, mid, end);
 
     if (nums[start] > nums[mid]) {
       if (target > nums[start] || target <= nums[mid]) {
@@ -611,7 +609,36 @@ var search = function (nums, target) {
   return find(0, nums.length - 1);
 };
 
-// console.log("ans----", search([1, 3, 5], 3));
+/**
+ * 33. 搜索旋转排序数组 2
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var search = function (nums, target) {
+  let left = 0;
+  let right = nums.length - 1;
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2);
+    if (nums[left] <= nums[mid]) {
+      if (target <= nums[mid] && target >= nums[left]) {
+        right = mid
+      } else {
+        left = mid + 1
+      }
+    } else {
+      if (target > nums[mid] && target <= nums[right]) {
+        left = mid + 1
+      } else {
+        right = mid
+      }
+    }
+  }
+
+  return nums[left] === target ? left : -1
+}
+
+// console.log("search----", search([4, 5, 6, 7, 0, 1, 2], 7));
 
 /**
  * 34. 在排序数组中查找元素的第一个和最后一个位置
@@ -668,8 +695,42 @@ var searchRange = function (nums, target) {
   return ans;
 };
 
-// console.log("ans----", searchRange([5, 7, 7, 8, 8, 10], 6));
-// console.log("ans----", searchRange([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9], 8));
+/**
+ * 34. 在排序数组中查找元素的第一个和最后一个位置
+ * 给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置O(logn)
+ */
+var searchRange = function (nums, target) {
+  const binarySearch = (target) => {
+    let left = 0;
+    let right = nums.length - 1;
+    let ans = -1;
+    while (left <= right) {
+      let mid = Math.floor((left + right) / 2);
+      if (nums[mid] >= target) {
+        right = mid - 1;
+        ans = mid;
+      } else {
+        left = mid + 1;
+      }
+    }
+    if (left === nums.length) {
+      return left
+    }
+    return ans;
+  }
+
+  const start = binarySearch(target)
+  const end = binarySearch(target + 1) - 1
+
+  if (target === nums[start] && start < nums.length && end < nums.length) {
+    return [start, end]
+  } else {
+    return [-1, -1]
+  }
+}
+
+// console.log("searchRange----", searchRange([5, 7, 7, 8, 8, 10], 10));
+// console.log("searchRange----", searchRange([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9], 8));
 
 /**
  * 39. 组合总和

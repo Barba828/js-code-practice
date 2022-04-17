@@ -1,4 +1,4 @@
-import { List, ListNode, Tree, TreeNode } from "../structure/index.js";
+import { ArrayToList, ListNode, ArrayToTree, TreeNode } from "../structure/index.js";
 
 /**
  * 101. 对称二叉树
@@ -20,7 +20,7 @@ var isSymmetric = function (root) {
   return compare(root.left, root.right);
 };
 
-// console.log("isSymmetric===", isSymmetric(Tree([1, 2, 2, 3, 4, 4])));
+// console.log("isSymmetric===", isSymmetric(ArrayToTree([1, 2, 2, 3, 4, 4])));
 
 /**
  * 102. 二叉树的层序遍历
@@ -55,8 +55,43 @@ var levelOrder = function (root) {
 
 // console.log(
 //   "levelOrder===",
-//   levelOrder(Tree([1, 2, null, 3, null, 4, null, 5]))
+//   levelOrder(ArrayToTree([1, 2, null, 3, null, 4, null, 5]))
 // );
+
+/**
+ * 153. 寻找旋转排序数组中的最小值
+ * @tag 二分法
+ * @param {number[]} nums
+ * @return {number}
+ */
+var findMin = function (nums) {
+  let left = 0
+  let right = nums.length - 1
+
+  while (left !== right) {
+    const mid = Math.floor((left + right) / 2)
+
+    if (nums[left] > nums[right]) {
+      // left -> right 包含旋转，分两种情况二分判断最小值归属
+      if (nums[left] > nums[mid]) {
+        right = mid
+      } else {
+        left = mid + 1
+      }
+    } else {
+      // 不包含旋转，则最左侧肯定是最小值
+      right = left
+    }
+  }
+
+  return nums[left]
+};
+
+console.log(
+  "findMin===",
+  findMin([4, 5, 6, 7, 0, 1, 2]),
+  findMin([2, 1])
+);
 
 /**
  * 104. 二叉树的最大深度
@@ -75,7 +110,7 @@ var maxDepth = function (root) {
   return max;
 };
 
-// console.log("maxDepth===", maxDepth(Tree([3, 9, 20, null, null, 15, 7])));
+// console.log("maxDepth===", maxDepth(ArrayToTree([3, 9, 20, null, null, 15, 7])));
 
 /**
  * 105. 从前序与中序遍历序列构造二叉树
@@ -142,7 +177,7 @@ var flatten = function (node) {
   node.left = null;
 };
 
-// console.log("flatten===", flatten(Tree([1, 2, 5, 3, 4, null, 6])));
+// console.log("flatten===", flatten(ArrayToTree([1, 2, 5, 3, 4, null, 6])));
 
 /**
  * 121. 买卖股票的最佳时机
@@ -192,7 +227,7 @@ var maxPathSum = function (root) {
   return max;
 };
 
-// console.log("maxPathSum===", maxPathSum(Tree([7, 1, 5, 3, 6, 4])));
+// console.log("maxPathSum===", maxPathSum(ArrayToTree([7, 1, 5, 3, 6, 4])));
 
 /**
  * 128. 最长连续序列
@@ -335,7 +370,7 @@ var hasCycle = function (head) {
   return true;
 };
 
-// console.log("hasCycle===", hasCycle(List([3, 2, 0, -4])));
+// console.log("hasCycle===", hasCycle(ArrayToList([3, 2, 0, -4])));
 
 /**
  * 142. 环形链表 II
@@ -373,7 +408,7 @@ var detectCycle = function (head) {
   }
   return ptr;
 };
-// let head = List([3, 2, 0, 4, 5]);
+// let head = ArrayToList([3, 2, 0, 4, 5]);
 // head.next.next.next.next.next = head.next.next;
 // console.log("detectCycle===", detectCycle(head));
 
@@ -436,4 +471,4 @@ var sortList = function (head) {
   return toSortList(head, null);
 };
 
-console.log("sortList===", sortList(List([3, 2, 0, 4, 5])).toString());
+// console.log("sortList===", sortList(ArrayToList([3, 2, 0, 4, 5])).toString());
