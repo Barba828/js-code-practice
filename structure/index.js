@@ -1,2 +1,2 @@
-export { Tree, TreeNode } from "./Tree.js";
-export { List, ListNode } from "./List.js";
+export { ArrayToTree, TreeNode } from "./Tree.js";
+export { ArrayToList, ListNode } from "./List.js";

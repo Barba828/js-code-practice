@@ -24,21 +24,6 @@ function Person() {
 
 }
 // Person.prototype.name = '张三'
-// var p1 = new Person();
-// var p2 = new Person();
-// p1.name = '张三';
-// console.log(p1.hasOwnProperty('name'), p1.name)  //true
-// console.log(p2.hasOwnProperty('name'), p2.name)  //false
-// console.log(p1.constructor)
-
-// class Father {
-//     constructor(name) {
-//         this.name = name
-//     }
-// }
-
-// var f1 = new Father('张三')
-// console.log(f1.constructor)  
 
 
 

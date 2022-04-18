@@ -125,31 +125,26 @@ CQueue.prototype.deleteHead = function () {
 
 /**
  * 11. 盛最多水的容器
+ * @tag 双指针
  * @param {number[]} height
  * @return {number}
  */
 var maxArea = function (height) {
-  let left = 0;
-  let right = height.length - 1;
-  let ans = 0;
-  let h = 0;
-  let w = right - left;
-  while (left !== right) {
-    if (height[left] > height[right]) {
-      h = height[right];
-      right--;
+  let left = 0
+  let right = height.length - 1
+  let area = 0
+  while (left < right) {
+    const temp = Math.min(height[left], height[right]) * (right - left)
+    area = Math.max(temp, area)
+    if (height[left] < height[right]) {
+      left++
     } else {
-      h = height[left];
-      left++;
+      right--
     }
-    let tmp = h * w;
-    ans = tmp > ans ? tmp : ans;
-    w--;
   }
-  return ans;
+  return area
 };
-
-// console.log(maxArea([4, 3, 2, 1, 4]));
+console.log("maxArea====", maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7]));
 
 /**
  * 15. 三数之和
@@ -194,9 +189,7 @@ var threeSum = function (nums) {
   }
   return res
 }
-console.log("threeSum====", threeSum([-2, 0, 1, 1, 2]));
-// console.log("threeSum====", threeSum([-1, 0, 1, 2, -1, -4]));
-// console.log("threeSum====", threeSum([-4, 0, 1, 2, 2, 3]));
+console.log("threeSum====", threeSum([-2, 0, 1, 1, 2]))
 
 /**
  * 17. 电话号码的字母组合

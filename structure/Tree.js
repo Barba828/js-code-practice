@@ -14,7 +14,7 @@ function TreeNode(val, left, right) {
  * @param {Array} array
  * @returns {TreeNode} 树根节点
  */
-function Tree(array) {
+function ArrayToTree(array) {
   if (!(array instanceof Array) || array.length === 0) {
     return null;
   }
@@ -127,4 +127,4 @@ TreeNode.prototype.get = function (val) {
   return nextLayer(this);
 };
 
-export { Tree, TreeNode };
+export { ArrayToTree, TreeNode };

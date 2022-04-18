@@ -30,7 +30,7 @@ ListNode.prototype.toString = function () {
  * @param {*} array
  * @returns
  */
-function List(array) {
+function ArrayToList(array) {
   if (array.length === 0) {
     return null;
   }
@@ -43,4 +43,4 @@ function List(array) {
   return head;
 }
 
-export { List, ListNode };
+export { ArrayToList, ListNode };
