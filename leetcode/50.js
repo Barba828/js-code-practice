@@ -126,6 +126,7 @@ CQueue.prototype.deleteHead = function () {
 /**
  * 11. 盛最多水的容器
  * @tag 双指针
+ * @tag 贪心
  * @param {number[]} height
  * @return {number}
  */
@@ -144,7 +145,7 @@ var maxArea = function (height) {
   }
   return area
 };
-console.log("maxArea====", maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7]));
+// console.log("maxArea====", maxArea([1, 8, 6, 2, 5, 4, 8, 3, 7]));
 
 /**
  * 15. 三数之和
@@ -189,7 +190,7 @@ var threeSum = function (nums) {
   }
   return res
 }
-console.log("threeSum====", threeSum([-2, 0, 1, 1, 2]))
+// console.log("threeSum====", threeSum([-2, 0, 1, 1, 2]))
 
 /**
  * 17. 电话号码的字母组合
@@ -404,6 +405,12 @@ var removeElement = function (nums, val) {
 
 /**
  * 28. KMP实现 strStr()
+ * @tag kmp
+ * kmp 算法核心是公共前后缀 next ，即字符串前后缀重复长度，如："aa" next = 1, "ab" next = 0, "abcabc" next = 3
+ * needle 串求出其 next 数组，如："aabaaab" next = [ 0, 1, 0, 1, 2, 2, 3 ]，next 数组用以匹配不成功的回溯
+ * 遍历 haystack 主串时，此时 haystack 主串匹配到 i 位置， needle 子串在 j 位置，
+ * 若匹配处 haystack[j] != needle[j]，则此次匹配不成功
+ * needle 子串位置 i 向回移动 next[i] 位继续和 haystack 主串匹配（利用前后缀相同的原理）
  * @param {string} haystack
  * @param {string} needle
  * @return {number}
@@ -415,32 +422,40 @@ var strStr = function (haystack, needle) {
     return 0;
   }
   let next = new Array(m).fill(0);
-  // 求取 KMP 的 next 数组，l前缀，r后缀
+
+  // KMP算法 1：遍历 needle 求取 next 最长公共前后缀数组，l前缀下标，r后缀下标
   for (let l = 0, r = 1; r < m; r++) {
+    // 前后缀字符不相等时，需要 l 前缀回溯之前的 next
     while (l > 0 && needle[l] !== needle[r]) {
       l = next[l - 1];
     }
+    // 当前前后字符相等，则 l 公共前后缀 + 1
     if (needle[l] === needle[r]) {
       l++;
     }
+    // 前后缀值相同
     next[r] = l;
   }
-  // 与 KMP 相似算法，求取 needle 作为前缀出现在 haystack 中的位置
-  for (let l = 0, r = 0; r < n; r++) {
-    while (l > 0 && needle[l] !== haystack[r]) {
-      l = next[l - 1];
+
+  // KMP 算法 2：遍历 haystack 主串，求取 needle 位置，i 子串下标，h主串下标
+  for (let i = 0, h = 0; h < n; h++) {
+    // 主子字符不匹配时，需要 i 根据 next 回溯到上一个公共前缀位置
+    while (i > 0 && needle[i] !== haystack[h]) {
+      i = next[i - 1];
     }
-    if (needle[l] === haystack[r]) {
-      l++;
+    // 主子字符匹配，则继续匹配下标 + 1
+    if (needle[i] === haystack[h]) {
+      i++;
     }
-    if (l === m) {
-      return r - m + 1;
+    // 已匹配完子串字符
+    if (i === m) {
+      return h - m + 1;
     }
   }
   return -1;
 };
 
-// console.log("===", strStr("hello", "el"));
+console.log("strStr===", strStr("helelo", "aabaaab"));
 
 /**
  * 剑指 Offer 30. 包含min函数的栈

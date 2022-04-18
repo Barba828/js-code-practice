@@ -97,6 +97,33 @@ Trie.prototype.startsWith = function (prefix) {
 // console.log(obj.startsWith("appl"));
 
 /**
+ * 209. 长度最小的子数组
+ * @tag 滑动窗口
+ * @tag 双指针
+ * 解法和 713. 乘积小于K的子数组 2 相同
+ * @param {number} target
+ * @param {number[]} nums
+ * @return {number}
+ */
+var minSubArrayLen = function (target, nums) {
+  let len = Infinity
+  let left = 0
+  let right = 0
+  let add = 0
+  while (right < nums.length) {
+    add += nums[right]
+    while (add >= target) {
+      len = Math.min(len, right - left + 1)
+      add -= nums[left]
+      left++
+    }
+    right++
+  }
+  return len === Infinity ? 0 : len
+};
+console.log('minSubArrayLen====', minSubArrayLen(7, [1, 1, 1]));
+
+/**
  * 213. 打家劫舍 II
  * @param {number[]} nums
  * @return {number}
@@ -118,9 +145,6 @@ var rob = function (nums) {
     }
     return dp;
   };
-
-  console.log(listMax(0, nums.length - 1));
-  console.log(listMax(1, nums.length));
 
   return Math.max(...listMax(0, nums.length - 1), ...listMax(1, nums.length));
 };
@@ -163,7 +187,7 @@ var reverseList = function (head) {
   return pre;
 };
 
-console.log(reverseList(ArrayToList([1, 2, 3, 4, 5])).toString());
+// console.log('reverseList====', reverseList(ArrayToList([1, 2, 3, 4, 5])).toString());
 
 /**
  * 215. 数组中的第K个最大元素
@@ -413,7 +437,7 @@ var addDigits = function (num) {
   return num % 9 === 0 ? 9 : num % 9;
 };
 
-console.log(addDigits(38));
+// console.log('addDigits====', addDigits(38));
 
 // console.log(
 //   "searchMatrix===" +

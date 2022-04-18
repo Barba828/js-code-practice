@@ -203,3 +203,4 @@ var rob = function (root) {
 };
 
 console.log("rob===", rob(ArrayToTree([3, 2, 3, null, 3, null, 1])));
+

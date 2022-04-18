@@ -30,6 +30,16 @@ var missingElement = function (nums, k) {
   return nums[left - 1] + k - missing(left - 1, nums);
 };
 
+/**
+ * 1091. 二进制矩阵中的最短路径
+ * @tag 深度优先搜索
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var shortestPathBinaryMatrix = function (grid) {
+
+};
+
 // console.log(missingElement([4, 7, 9, 10], 3));
 
 /**

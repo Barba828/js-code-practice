@@ -187,11 +187,11 @@ var findPeakElement = function (nums) {
   return left
 };
 
-console.log(
-  "findPeakElement===",
-  findPeakElement([1, 2, 1, 3, 5, 6, 4]),
-  findPeakElement([1, 2, 3, 1])
-);
+// console.log(
+//   "findPeakElement===",
+//   findPeakElement([1, 2, 1, 3, 5, 6, 4]),
+//   findPeakElement([1, 2, 3, 1])
+// );
 
 /**
  * 169. 多数元素
@@ -239,6 +239,7 @@ var rob = function (nums) {
 
 /**
  * 200. 岛屿数量
+ * @tag 深度优先搜索
  * @param {character[][]} grid
  * @return {number}
  */
@@ -253,7 +254,8 @@ var numIslands = function (grid) {
     if (j > 0 && grid[i][j - 1] === "1") DFS(i, j - 1);
     if (i < m - 1 && grid[i + 1][j] === "1") DFS(i + 1, j);
     if (j < n - 1 && grid[i][j + 1] === "1") DFS(i, j + 1);
-  };
+  }
+
   for (let i = 0; i < m; i++) {
     for (let j = 0; j < n; j++) {
       if (grid[i][j] === "1") {
@@ -265,11 +267,11 @@ var numIslands = function (grid) {
   return count;
 };
 
-// console.log(
-//   "numIslands===",
-//   numIslands([
-//     ["1", "1", "1"],
-//     ["0", "1", "0"],
-//     ["1", "1", "1"],
-//   ])
-// );
+console.log(
+  "numIslands===",
+  numIslands([
+    ["1", "1", "1"],
+    ["0", "1", "0"],
+    ["1", "1", "1"],
+  ])
+);

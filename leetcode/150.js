@@ -87,11 +87,11 @@ var findMin = function (nums) {
   return nums[left]
 };
 
-console.log(
-  "findMin===",
-  findMin([4, 5, 6, 7, 0, 1, 2]),
-  findMin([2, 1])
-);
+// console.log(
+//   "findMin===",
+//   findMin([4, 5, 6, 7, 0, 1, 2]),
+//   findMin([2, 1])
+// );
 
 /**
  * 104. 二叉树的最大深度
@@ -175,9 +175,39 @@ var flatten = function (node) {
   }
 
   node.left = null;
+  return node;
 };
 
 // console.log("flatten===", flatten(ArrayToTree([1, 2, 5, 3, 4, null, 6])));
+
+/**
+ * 117. 填充每个节点的下一个右侧节点指针 II
+ * @tag 广度优先搜索
+ * 实际上层级遍历，每一遍历一层先保存到 nextQueue ，用以生成 next 指向，然后更新 queue 
+ * @param {Node} root
+ * @return {Node}
+ */
+var connect = function (root) {
+  if (!root) {
+    return root
+  }
+  let queue = [root]
+
+  while (queue.length > 0) {
+    const nextQueue = []
+    for (let i = 0; i < queue.length; i++) {
+      if (queue[i].left) nextQueue.push(queue[i].left)
+      if (queue[i].right) nextQueue.push(queue[i].right)
+    }
+    for (let j = 0; j < nextQueue.length - 1; j++) {
+      nextQueue[j].next = nextQueue[j + 1]
+    }
+
+    queue = nextQueue
+  }
+  return root
+};
+console.log("connect===", connect(ArrayToTree([])));
 
 /**
  * 121. 买卖股票的最佳时机
