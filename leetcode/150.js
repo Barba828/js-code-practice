@@ -207,7 +207,7 @@ var connect = function (root) {
   }
   return root
 };
-console.log("connect===", connect(ArrayToTree([])));
+// console.log("connect===", connect(ArrayToTree([])));
 
 /**
  * 121. 买卖股票的最佳时机
@@ -284,19 +284,57 @@ var longestConsecutive = function (nums) {
   }
   return maxLength;
 };
-
 // console.log(
 //   "longestConsecutive===",
 //   longestConsecutive([100, 4, 200, 1, 3, 2])
 // );
 
 /**
- * 146. LRU 缓存机制
- * Map.keys() 迭代器自动保存set添加记录
- * put时自动保存记录
- * get时通过先删除后添加自动保存记录
- * @param {number} capacity
+ * 130. 被围绕的区域
+ * @tag 深度优先搜索
+ * 先从四条边遍历 dfs ，暂时修改不被围绕的区域为 Y，再遍历 board，被围绕的 O 改为 X ，不被围绕的 Y 还原为 O 
+ * @param {character[][]} board
+ * @return {void} Do not return anything, modify board in-place instead.
  */
+var solve = function (board) {
+  const height = board.length
+  const width = board[0].length
+
+  const dfs = (x, y) => {
+    if (x < 0 || y < 0 || x > height - 1 || y > width - 1 || board[x][y] !== 'O') {
+      return
+    }
+    board[x][y] = "Y"
+    dfs(x - 1, y)
+    dfs(x + 1, y)
+    dfs(x, y - 1)
+    dfs(x, y + 1)
+  }
+
+  for (let i = 0; i < height; i++) {
+    dfs(i, 0)
+    dfs(i, width - 1)
+  }
+  for (let i = 0; i < width; i++) {
+    dfs(0, i)
+    dfs(height - 1, i)
+  }
+  for (let i = 0; i < height; i++) {
+    for (let j = 0; j < width; j++) {
+      if (board[i][j] === 'O') {
+        board[i][j] = "X"
+      }
+      if (board[i][j] === 'Y') {
+        board[i][j] = "O"
+      }
+    }
+  }
+  return board
+};
+// console.log(
+//   "solve===",
+//   solve([["X", "X", "X", "X"], ["X", "O", "O", "X"], ["X", "X", "O", "X"], ["X", "O", "X", "X"]])
+// );
 
 /**
  * 136. 只出现一次的数字
@@ -312,12 +350,12 @@ var singleNumber = function (nums) {
   }
   return ans;
 };
-
 // console.log("singleNumber===", singleNumber([1, 2, 3, 4, 5, 4, 3, 2, 1]));
 
 /**
  * 139. 单词拆分
- * 动态规划，第一层遍历 i: 0->s.length，第二层遍历 j: 0->i寻找之前符合条件的单词
+ * @tag 动态规划
+ * 第一层遍历 i: 0->s.length，第二层遍历 j: 0->i寻找之前符合条件的单词
  * @param {string} s
  * @param {string[]} wordDict
  * @return {boolean}
@@ -340,6 +378,13 @@ var wordBreak = function (s, wordDict) {
 
 // console.log("wordBreak===", wordBreak("dogsandot", ["dog", "sand", "dot"]));
 
+/**
+ * 146. LRU 缓存机制
+ * Map.keys() 迭代器自动保存set添加记录
+ * put时自动保存记录
+ * get时通过先删除后添加自动保存记录
+ * @param {number} capacity
+ */
 var LRUCache = function (capacity) {
   this.capacity = capacity;
   this.value = new Map();

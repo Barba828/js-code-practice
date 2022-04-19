@@ -1,73 +1,114 @@
 /**
- * 844. 比较含退格的字符串
- * @tag 栈
- * 给定 s 和 t 两个字符串，当它们分别被输入到空白的文本编辑器后，如果两者相等，返回 true 。# 代表退格字符。
- * 使用栈来重构 # 退格的字符串再比较
- * @param {string} s
- * @param {string} t
- * @return {boolean}
+ * 713. 乘积小于K的子数组
+ * @tag 滑动窗口 遍历 O(n2) 复杂度
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
  */
-var backspaceCompare = function (s, t) {
-    const transSharp = (str) => {
-        const arr = []
-        str.split('').forEach(item => {
-            if (item === '#') {
-                arr.pop()
+var numSubarrayProductLessThanK = function (nums, k) {
+    let count = 0
+    for (let index = 0; index < nums.length; index++) {
+        if (nums[index] >= k) continue
+
+        let step = 0 // 子数组长度
+        let mul = 1 // 乘积
+        while (nums[index + step]) {
+            mul *= nums[index + step]
+            if (mul < k) {
+                count++
             } else {
-                arr.push(item)
+                break
             }
-        })
-        return arr.join('')
+            step++
+        }
     }
-    return transSharp(s) === transSharp(t)
+    return count
 };
 
 /**
- * 844. 比较含退格的字符串 2 
- * @tag 双指针 
- * 从字符串尾部开始双指针遍历，skipS记录 # 次数，indexS记录指针位置
- * 每一次子whlie循环获取从后往前数的下一个有效字母，比较
+ * 713. 乘积小于K的子数组 2
+ * @tag 滑动窗口
+ * @tag 双指针
+ * 和 209. 长度最小的子数组 相同解法
+ * 滑动窗口为双指针构造[left, right]，乘积 mul < k时，即有 (right - left + 1 ) 个子数组
+ * 右指针遍历 n ，左指针实际上也遍历 n ，复杂度 O(n)
  */
-var backspaceCompare = function (s, t) {
-    let skipS = 0
-    let skipT = 0
-    let sIndex = s.length - 1
-    let tIndex = t.length - 1
-
-    while (sIndex >= 0 || tIndex >= 0) {
-        // s指针获取下一个有效自负sIndex
-        while (sIndex >= 0) {
-            if (s[sIndex] === '#') {
-                skipS++
-                sIndex--
-            } else if (skipS > 0) {
-                skipS--
-                sIndex--
-            } else {
-                break
-            }
-        }
-        // t指针获取下一个有效自负tIndex
-        while (tIndex >= 0) {
-            if (t[tIndex] === '#') {
-                skipT++
-                tIndex--
-            } else if (skipT > 0) {
-                skipT--
-                tIndex--
-            } else {
-                break
-            }
-        }
-
-        if (s[sIndex] !== t[tIndex]) {
-            return false
-        }
-
-        sIndex--
-        tIndex--
+var numSubarrayProductLessThanK = function (nums, k) {
+    if (k <= 1) {
+        return 0
     }
-    return true
-};
+    let count = 0 // 计数
+    let left = 0 // 左指针
+    let right = 0 // 右指针
+    let mul = 1 // 乘积
+    while (right < nums.length) {
+        mul *= nums[right]
+        while (mul >= k) {
+            mul /= nums[left]
+            left++
+        }
 
-console.log("backspaceCompare====", backspaceCompare('ab#c', 'ad#c'));
+        count += right - left + 1
+        right++
+    }
+    return count
+}
+
+// console.log('numSubarrayProductLessThanK====', numSubarrayProductLessThanK([10, 5, 2, 6], 100));
+
+/**
+ * 797. 所有可能的路径
+ * @tag 深度优先遍历
+ * @param {number[][]} graph
+ * @return {number[][]}
+ */
+var allPathsSourceTarget = function (graph) {
+    const ans = []
+    const stack = [] // 保存当前路径
+    const dfs = (i, n) => {
+        if (i === n) {
+            ans.push([...stack, n])
+            return
+        }
+        for (const y of graph[i]) {
+            stack.push(i)
+            dfs(y, n)
+            stack.pop()
+        }
+    }
+    dfs(0, graph.length - 1)
+    return ans
+};
+/**
+ * 797. 所有可能的路径
+ * @tag 深度优先
+ * @tag 回溯
+ */
+var allPathsSourceTarget = function (graph) {
+    // 回溯保存遍历过到终点的路径数组
+    const paths = new Array(graph.length).fill(false)
+
+    const dfs = (i, n) => {
+        // 已有 i->n 路径 返回回溯值
+        if (paths[i]) {
+            return paths[i]
+        }
+
+        // 新建 i->n 路径
+        const path = []
+        // 遍历 i 点支持的下一站
+        for (const y of graph[i]) {
+            const x = dfs(y, n)
+            // 获取下一站的所有路径，push到 i 点路径
+            path.push(...x.map(p => [i, ...p]))
+        }
+        paths[i] = path
+        return path
+    }
+
+    paths[graph.length - 1] = [[graph.length - 1]]
+    dfs(0, graph.length - 1)
+    return paths[0]
+};
+// console.log('allPathsSourceTarget====', allPathsSourceTarget([[1, 2], [3], [1, 3], []]));
+// console.log('allPathsSourceTarget====', allPathsSourceTarget([[4, 3, 1], [3, 2, 4], [3], [4], []]));
