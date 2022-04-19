@@ -1,4 +1,24 @@
-import { ArrayToList, ListNode, ArrayToTree, TreeNode } from "../structure/index.js";
+import { ListNode } from "../structure/index.js";
+
+/**
+ * 1. 两数之和
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (nums, target) {
+  const map = new Map()
+  const ans = []
+  for (let i = 0; i < nums.length; i++) {
+    if (map.has(nums[i])) {
+      ans[0] = map.get(nums[i])
+      ans[1] = i
+      return ans
+    }
+    map.set(target - nums[i], i)
+  }
+};
+console.log("twoSum====", twoSum([2, 7, 11, 15], 9));
 
 /**
  * 4. 寻找两个正序数组的中位数

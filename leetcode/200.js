@@ -186,12 +186,36 @@ var findPeakElement = function (nums) {
   }
   return left
 };
-
 // console.log(
 //   "findPeakElement===",
 //   findPeakElement([1, 2, 1, 3, 5, 6, 4]),
 //   findPeakElement([1, 2, 3, 1])
 // );
+
+/**
+ * 167. 两数之和 II - 输入有序数组
+ * @tag 二分法
+ * 和 1. 两数之和 一样的解法也没有问题
+ * 这里因为有序，所以使用二分法
+ * @param {number[]} numbers
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (nums, target) {
+  let left = 0
+  let right = nums.length - 1
+  while (left < right) {
+    const sum = nums[left] + nums[right]
+    if (sum < target) {
+      left++
+    } else if (sum > target) {
+      right--
+    } else {
+      return [left + 1, right + 1]
+    }
+  }
+}
+// console.log("twoSum====", twoSum([2, 7, 11, 15], 9));
 
 /**
  * 169. 多数元素
@@ -213,12 +237,9 @@ var majorityElement = function (nums) {
     } else {
       count--;
     }
-    // console.log(item, count);
   }
-  //   console.log(item);
   return item;
 };
-
 // console.log("majorityElement===", majorityElement([1, 2, 1, 2, 1, 2, 1]));
 
 /**
@@ -266,12 +287,11 @@ var numIslands = function (grid) {
   }
   return count;
 };
-
-console.log(
-  "numIslands===",
-  numIslands([
-    ["1", "1", "1"],
-    ["0", "1", "0"],
-    ["1", "1", "1"],
-  ])
-);
+// console.log(
+//   "numIslands===",
+//   numIslands([
+//     ["1", "1", "1"],
+//     ["0", "1", "0"],
+//     ["1", "1", "1"],
+//   ])
+// );
