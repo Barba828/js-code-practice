@@ -1,4 +1,4 @@
-import { ArrayToTree } from "../structure/ArrayToTree.js";
+import { ArrayToTree, ArrayToList, ListNode } from "../structure/index.js";
 
 /**
  * 300. 最长递增子序列
@@ -180,8 +180,90 @@ var coinChange = function (coins, amount) {
   const ans = change(amount);
   return ans === Infinity ? -1 : ans;
 };
-
 // console.log("coinChange===" + coinChange([2], 3));
+
+/**
+ * 328. 奇偶链表
+ * 新建一个奇节点和一个偶节点，一次遍历更新
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var oddEvenList = function (head) {
+  if (!head || !head.next) return head
+
+  let single = head, double = head.next
+  const doubleHead = double // 另存偶链表头节点
+
+  while (double && double.next) {
+    // 奇链表更新
+    single.next = double.next
+    single = single.next
+
+    // 偶链表更新（基于奇链表更新）
+    double.next = single.next
+    double = double.next
+  }
+  single.next = doubleHead
+  return head
+};
+// console.log("oddEvenList====" + oddEvenList(ArrayToList([1, 2, 3, 4, 5])));
+
+/**
+ * 334. 递增的三元子序列
+ * 双向遍历
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+var increasingTriplet = function (nums) {
+  const len = nums.length
+  if (len < 3) {
+    return false
+  }
+
+  const leftMin = [...nums]
+  const rightMax = [...nums]
+
+  for (let i = 1; i < len; i++) {
+    leftMin[i] = Math.min(nums[i], leftMin[i - 1])
+  }
+  for (let i = len - 2; i >= 0; i--) {
+    rightMax[i] = Math.max(nums[i], rightMax[i + 1])
+  }
+
+  for (let i = 0; i < len; i++) {
+    if (leftMin[i] < nums[i] && rightMax[i] > nums[i]) {
+      return true
+    }
+  }
+  return false
+};
+/**
+ * 334. 递增的三元子序列
+ * @tag 贪心算法
+ * 每一次遍历更新最小值，第二小值
+ */
+var increasingTriplet = function (nums) {
+  const n = nums.length
+  if (n < 3) {
+    return false
+  }
+  let first = nums[0], second = Infinity
+  for (let i = 1; i < n; i++) {
+    const num = nums[i]
+    if (num > second) {
+      // first < second < num
+      return true
+    } else if (num > first) {
+      // first < num < second 更新第二小值
+      second = num
+    } else {
+      // num < first < second 更新最小值
+      first = num
+    }
+  }
+  return false
+};
+// console.log("increasingTriplet====" + increasingTriplet([20, 100, 10, 12, 5, 13]));
 
 /**
  * 337. 打家劫舍 III
@@ -201,8 +283,7 @@ var rob = function (root) {
   };
   return Math.max(...search(root));
 };
-
-console.log("rob===", rob(ArrayToTree([3, 2, 3, null, 3, null, 1])));
+// console.log("rob===", rob(ArrayToTree([3, 2, 3, null, 3, null, 1])));
 
 /**
  * 340. 至多包含 K 个不同字符的最长子串
@@ -246,4 +327,38 @@ var lengthOfLongestSubstringKDistinct = function (s, k) {
     right++;
   }
   return maxLength;
+};
+
+/**
+ * 388. 文件的最长绝对路径
+ * @tag 栈
+ * 将 input 分割成二维数组，遍历一维部分即是路径，二维部分入栈判断最长路径
+ * @param {string} input
+ * @return {number}
+ */
+var lengthLongestPath = function (input) {
+  if (!input.includes('.')) return 0
+
+  const pathArr = input.split('\n').map(item => item.split('\t'))
+  const stack = [pathArr[0][pathArr[0].length - 1]]
+  let ans = stack.join('').length + stack.length - 1
+
+  for (let i = 1; i < pathArr.length; i++) {
+    // 每次遍历都先清理上一次路径的路径层数
+    const popLen = pathArr[i - 1].length - pathArr[i].length + 1
+    for (let j = 0; j < popLen; j++) {
+      stack.pop()
+    }
+
+    // 当前文件名
+    const name = pathArr[i][pathArr[i].length - 1]
+    stack.push(name)
+
+    // 该路径是文件则更新路径长度
+    if (name.includes('.')) {
+      ans = Math.max(ans, stack.join('').length + stack.length - 1)
+    }
+  }
+
+  return ans
 };

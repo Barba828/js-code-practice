@@ -132,40 +132,44 @@ var lengthOfLongestSubstringTwoDistinct = function (s) {
 /**
  * 160. 相交链表
  * 双指针法，headA，headB一起遍历next，headA到最后一位则指向headB头节点，headB到最后一位也指向headA头节点
- * 假设headA长度m，headB长度n，则如果有交叉，则在m+n次遍历内重合（出现在[max(m,n),m+n]次中）
+ * 假设headA长度m，headB长度n，则如果有交叉，则一定在 m+n 次遍历内重合，即实际上比较的是:
+ * headA -> ... -> headB -> ...
+ * headB -> ... -> headA -> ...
+ * 检查两条链表在第 x 次遍历时节点是否相等
  * @param {ListNode} headA
  * @param {ListNode} headB
  * @return {ListNode}
  */
 var getIntersectionNode = function (headA, headB) {
-  let pA = headA;
-  let pB = headB;
-  let count = 0;
-  while (pA.val !== pB.val) {
-    if (pA.next) {
-      pA = pA.next;
-    } else {
-      pA = headB;
-      count++;
-    }
-    if (pB.next) {
-      pB = pB.next;
-    } else {
-      pB = headA;
-      count++;
-    }
-    if (count > 2) {
-      pA = null;
-      break;
-    }
+  let pA = headA, pB = headB
+  while (pA !== pB) {
+    pA = pA ? pA.next : headB
+    pB = pB ? pB.next : headA
   }
-  return pA;
+  return pA
 };
-
-// console.log(
-//   "getIntersectionNode===",
-//   getIntersectionNode(ArrayToList([1, 3, 5, 7, 9, 11]), ArrayToList([2, 4, 8, 10]))
-// );
+/**
+ * 160. 相交链表
+ * Hash法
+ */
+// var getIntersectionNode = function (headA, headB) {
+//   const set = new Set()
+//   while (headA) {
+//     set.add(headA)
+//     headA = headA.next
+//   }
+//   while (headB) {
+//     if (set.has(headB)) {
+//       return headB
+//     }
+//     headB = headB.next
+//   }
+//   return null
+// }
+console.log(
+  "getIntersectionNode====",
+  getIntersectionNode(ArrayToList([1, 3, 5, 7, 9, 11]), ArrayToList([2, 4, 5, 8, 10]))
+);
 
 /**
  * 162. 寻找峰值

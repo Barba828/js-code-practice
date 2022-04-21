@@ -197,7 +197,8 @@ var minPathSum = function (grid) {
 
 /**
  * 70. 爬楼梯
- * 动态规划，最后一步可以跨一步或者两步 f[i] = f[i - 1] + f[i - 2]
+ * @tag 动态规划
+ * 最后一步可以跨一步或者两步 f[i] = f[i - 1] + f[i - 2]，但是这里使用斐波那契递归算法会栈溢出
  * @param {number} n
  * @return {number}
  */
@@ -209,8 +210,34 @@ var climbStairs = function (n) {
   }
   return dpFib[n];
 };
+/**
+ * 70. 爬楼梯
+ * @tag 动态规划
+ * 使用滚动数组优化 动规数组
+ * 因为只需要 n-2,n-1,n 所以dp数组滚动更新即可
+ */
+var climbStairs = function (n) {
+  if (n <= 2) return n
 
-// console.log("===", climbStairs(6));
+  // 滚动数组也可以变为，滚动常数
+  // let dp2 = 0, dp1 = 1, dp = 2
+  // for (let i = 2; i < n; i++) {
+  //   dp2 = dp1
+  //   dp1 = dp
+  //   dp = dp2 + dp1
+  // }
+  // return dp;
+
+  // 滚动数组
+  const dp = [0, 1, 2]
+  for (let i = 2; i < n; i++) {
+    dp.shift()
+    dp.push(dp[0] + dp[1])
+  }
+  return dp[2];
+};
+
+console.log("climbStairs====", climbStairs(5));
 
 /**
  * 72. 编辑距离
@@ -248,8 +275,64 @@ var minDistance = function (word1, word2) {
 
   return dp[word1.length][word2.length];
 };
+// console.log("minDistance====", minDistance("intention", "execution"));
 
-// console.log("===", minDistance("intention", "execution"));
+/**
+ * 73. 矩阵置零
+ * 先遍历一遍，若出现 0 修改该行首和该列首为 0 ，再次遍历首行和首列，补全 0 
+ * 补全 0 时，matrix[0][0]需要特殊处理
+ * @param {number[][]} matrix
+ * @return {void} Do not return anything, modify matrix in-place instead.
+ */
+var setZeroes = function (matrix) {
+  const height = matrix.length
+  const width = matrix[0].length
+  let headRow = false, headCol = false // 处理 matrix[0][0]，是否补全首列/首行
+
+  // 遍历修改首行和首列
+  for (let i = 0; i < height; i++) {
+    for (let j = 0; j < width; j++) {
+      if (matrix[i][j] === 0) {
+        matrix[i][0] = 0
+        matrix[0][j] = 0
+        if (i === 0) headRow = true // 处理 matrix[0][0]
+        if (j === 0) headCol = true // 处理 matrix[0][0]
+      }
+    }
+  }
+
+  // 补全 0 
+  for (let i = 1; i < height; i++) {
+    if (matrix[i][0] === 0) {
+      for (let j = 0; j < width; j++) {
+        matrix[i][j] = 0
+      }
+    }
+  }
+  for (let j = 1; j < width; j++) {
+    if (matrix[0][j] === 0) {
+      for (let i = 0; i < height; i++) {
+        matrix[i][j] = 0
+      }
+    }
+  }
+
+  // 处理 matrix[0][0] 补全首列 0 
+  if (headRow) {
+    for (let j = 0; j < width; j++) {
+      matrix[0][j] = 0
+    }
+  }
+  // 处理 matrix[0][0] 补全首行 0 
+  if (headCol) {
+    for (let i = 1; i < height; i++) {
+      matrix[i][0] = 0
+    }
+  }
+  return matrix
+};
+console.log("setZeroes====", setZeroes([[1, 2, 3, 4], [5, 0, 7, 8], [0, 10, 11, 12], [13, 14, 15, 0]]));
+console.log("setZeroes====", setZeroes([[1, 0, 3]]));
 
 /**
  * 74. 搜索二维矩阵
@@ -278,7 +361,6 @@ var searchMatrix = function (matrix, target) {
   }
   return false
 };
-
 /**
  * 74. 搜索二维矩阵 2
  * 二分法 复杂度 log(m) + log(n)，二维两次二分搜索即可
@@ -309,7 +391,6 @@ var searchMatrix = function (matrix, target) {
 
   return matrix[top][left] === target
 };
-
 // console.log("searchMatrix===", searchMatrix([[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]], 3));
 
 /**
@@ -337,7 +418,7 @@ var deleteDuplicates = function (head) {
   return dummy.next;
 };
 
-console.log("deleteDuplicates===", deleteDuplicates(ArrayToList([1, 3, 3, 3, 4, 5])).toString())
+// console.log("deleteDuplicates===", deleteDuplicates(ArrayToList([1, 3, 3, 3, 4, 5])).toString())
 
 /**
  * 91. 解码方法

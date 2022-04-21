@@ -102,6 +102,5 @@ var findDuplicate = function (nums) {
   }
   return slow; // 环入口即是重复的数字
 };
-
 // console.log("findDuplicate===" + findDuplicate([3, 1, 3, 4, 2]));
 console.log("findDuplicate===" + findDuplicate([3, 1, 2, 2, 4]));

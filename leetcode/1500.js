@@ -64,7 +64,7 @@ var shortestPathBinaryMatrix = function (grid) {
   }
   return -1
 };
-console.log('shortestPathBinaryMatrix====', shortestPathBinaryMatrix([[0]]));
+// console.log('shortestPathBinaryMatrix====', shortestPathBinaryMatrix([[0]]));
 
 /**
  * 1182. 与目标颜色间的最短距离
@@ -108,6 +108,27 @@ var shortestDistanceColor = function (colors, queries) {
 //     [[5, 1]]
 //   )
 // );
+
+/**
+ * 1137. 第 N 个泰波那契数
+ * @tag 动态规划
+ * 和 509. 斐波那契数 相同解法
+ * @param {number} n
+ * @return {number}
+ */
+var tribonacci = function (n) {
+  if (n < 2) return n
+
+  let f3 = 0, f2 = 0, f1 = 1, f = 1
+  for (let i = 2; i < n; i++) {
+    f3 = f2
+    f2 = f1
+    f1 = f
+    f = f3 + f2 + f1
+  }
+  return f
+};
+console.log('tribonacci====', tribonacci(4));
 
 /**
  * 1229. 安排会议日程

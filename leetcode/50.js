@@ -1,4 +1,4 @@
-import { ListNode } from "../structure/index.js";
+import { ListNode, ArrayToList } from "../structure/index.js";
 
 /**
  * 1. 两数之和
@@ -18,7 +18,67 @@ var twoSum = function (nums, target) {
     map.set(target - nums[i], i)
   }
 };
-console.log("twoSum====", twoSum([2, 7, 11, 15], 9));
+// console.log("twoSum====", twoSum([2, 7, 11, 15], 9));
+
+/**
+ * 2. 两数相加
+ * 使用 l1 保存sum
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var addTwoNumbers = function (l1, l2) {
+  const head = l1
+  while (l1 || l2) {
+    let sum = l1.val + l2.val
+    if (sum > 9) {
+      sum -= 10
+      if (l1.next === null) {
+        l1.next = new ListNode(1)
+      } else {
+        l1.next.val += 1
+      }
+    }
+
+    l1.val = sum
+    if (!l1.next && !l2.next) break
+    if (!l1.next) l1.next = new ListNode(0)
+    if (!l2.next) l2.next = new ListNode(0)
+    l1 = l1.next
+    l2 = l2.next
+  }
+  return head
+};
+console.log("addTwoNumbers====", addTwoNumbers(ArrayToList([0]), ArrayToList([7, 3])));
+
+/**
+ * 3. 无重复字符的最长子串
+ * @tag 滑动窗口
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLongestSubstring = function (s) {
+  const set = new Set()
+  let left = 0
+  let right = 0
+  let len = 0
+
+  // 滑动 left 遍历每一个位置的最长子串，set保存无重复子串
+  while (left < s.length) {
+    // 滑动 right ，获取极长子串
+    while (s[right] && !set.has(s[right])) {
+      set.add(s[right])
+      right++
+    }
+
+    // 更新本轮 left 状态
+    len = Math.max(len, right - left)
+    set.delete(s[left])
+    left++
+  }
+  return len
+};
+// console.log("lengthOfLongestSubstring====", lengthOfLongestSubstring("bbbbb"));
 
 /**
  * 4. 寻找两个正序数组的中位数
@@ -55,8 +115,73 @@ var findMedianSortedArrays = function (nums1, nums2) {
     }
   }
 };
+// console.log("findMedianSortedArrays====", findMedianSortedArrays([1, 2], [-1, 3]));
 
-// console.log("===", findMedianSortedArrays([1, 2], [-1, 3]));
+/**
+ * 5. 最长回文子串
+ * @tag 广度优先遍历
+ * 以字符串中长度为 0 的单个字符开始 BFS 回文串
+ * @param {string} s
+ * @return {string}
+ */
+var longestPalindrome = function (s) {
+  const len = s.length
+  if (len < 2) return s
+
+  let start = 0
+  let length = 0
+  const queue = [[0, 0]]
+
+  for (let i = 0; i < len; i++) {
+    queue.push([i, i])
+    if (s[i] === s[i - 1]) {
+      queue.push([i, i - 1])
+    }
+  }
+
+  while (queue.length > 0) {
+    let [left, right] = queue.shift()
+    while (left > 0 && right < len && s[left - 1] === s[right + 1]) {
+      --left
+      ++right
+    }
+    if (right - left > length) {
+      start = left
+      length = right - left
+    }
+  }
+
+  return s.slice(start, start + length + 1)
+};
+/**
+ * 5. 最长回文子串
+ * 中心扩展法 
+ */
+var longestPalindrome = function (s) {
+  const len = s.length
+  if (len < 2) return s
+
+  const expandAroundCenter = (left, right) => {
+    while (left >= 0 && right < s.length && s[left] == s[right]) {
+      --left
+      ++right
+    }
+    return right - left - 1
+  }
+
+  let start = 0, end = 0
+  for (let i = 0; i < len; i++) {
+    const len1 = expandAroundCenter(i, i)
+    const len2 = expandAroundCenter(i, i + 1)
+    const len = Math.max(len1, len2)
+    if (len > end - start) {
+      start = i - Math.floor((len - 1) / 2)
+      end = i + Math.floor(len / 2)
+    }
+  }
+  return s.slice(start, end + 1)
+};
+// console.log("longestPalindrome====", longestPalindrome("babab"));
 
 /**
  * 6. Z 字形变换
@@ -171,46 +296,45 @@ var maxArea = function (height) {
  * 15. 三数之和
  * @tag 双指针
  * 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有和为 0 且不重复的三元组。
- * 
  * 遍历第一个数字给定一个 index ，剩下双指针为第二三个数字 left，right 表示从 index + 1 到 length - 1，复杂度 O(n2)
  * @param {number[]} nums
  * @return {number[][]}
  */
 var threeSum = function (nums) {
   nums.sort((a, b) => a - b)
-  const res = []
+  const ans = []
 
   for (let index = 0; index < nums.length; index++) {
-    if (nums[index] > 0) return res
+    // 如果当前数字大于 0，则三数之和必定大于 0
+    if (nums[index] > 0) return ans
+    // 如果当前数字等于前一个数字，则跳过（因为前一个数值循环时已经遍历过当前）
     if (nums[index] === nums[index - 1]) continue
+
     let left = index + 1
     let right = nums.length - 1
-
     while (left < right) {
       const temp = nums[index] + nums[left] + nums[right]
-      if (temp === 0) {
-        res.push([nums[index], nums[left], nums[right]])
-        while (nums[left] === nums[left - 1]) {
-          left++
-        }
-        while (nums[right] === nums[right + 1]) {
-          right--
-        }
-      }
 
-      if (temp < 0) {
+      if (temp === 0) {
+        ans.push([nums[index], nums[left], nums[right]])
+        // 去重 + 移动双指针
+        do {
+          left++
+        } while (nums[left] === nums[left - 1])
+        do {
+          right--
+        } while (nums[right] === nums[right + 1])
+      } else if (temp < 0) {
+        // 移动双指针
         left++
       } else if (temp > 0) {
-        right--
-      } else {
-        left++
         right--
       }
     }
   }
-  return res
+  return ans
 }
-// console.log("threeSum====", threeSum([-2, 0, 1, 1, 2]))
+// console.log("threeSum====", threeSum([-1, 0, 1, 2, -1, -4]))
 
 /**
  * 17. 电话号码的字母组合
@@ -243,8 +367,55 @@ var letterCombinations = function (digits) {
   });
   return ans;
 };
+// console.log('letterCombinations====', letterCombinations("23"));
 
-// console.log(letterCombinations("23"));
+/**
+ * 18. 四数之和
+ * @tag 双指针
+ * 和 15. 三数之和 相同解法，无非三数是一层for套while双指针，四数是两层for套while双指针
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[][]}
+ */
+var fourSum = function (nums, target) {
+  nums.sort((a, b) => a - b)
+  const len = nums.length
+  const ans = []
+  for (let i = 0; i < len - 3; i++) {
+    if (nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target) break
+    if (nums[i] + nums[len - 3] + nums[len - 2] + nums[len - 1] < target) continue
+    if (i > 0 && nums[i - 1] === nums[i]) continue
+
+    for (let j = i + 1; j < len - 2; j++) {
+      if (nums[i] + nums[j] + nums[j + 1] + nums[j + 2] > target) break
+      if (nums[i] + nums[j] + nums[len - 2] + nums[len - 1] < target) continue
+      if (j > i + 1 && nums[j - 1] === nums[j]) continue
+
+      let left = j + 1
+      let right = len - 1
+      while (left < right) {
+        const temp = nums[i] + nums[j] + nums[left] + nums[right]
+        if (temp === target) {
+          ans.push([nums[i], nums[j], nums[left], nums[right]])
+          do {
+            left++
+          } while (nums[left] === nums[left - 1])
+          do {
+            right--
+          } while (nums[right] === nums[right + 1])
+        } else if (temp < target) {
+          left++
+        } else if (temp > target) {
+          right--
+        }
+      }
+    }
+  }
+
+  return ans
+};
+// console.log('fourSum====', fourSum([1, 0, -1, 0, -2, 2], 0));
+// console.log('fourSum====', fourSum([2, 2, 2, 2, 2], 8));
 
 /**
  * 19. 删除链表的倒数第 N 个结点
@@ -475,7 +646,7 @@ var strStr = function (haystack, needle) {
   return -1;
 };
 
-console.log("strStr===", strStr("helelo", "aabaaab"));
+// console.log("strStr===", strStr("helelo", "aabaaab"));
 
 /**
  * 剑指 Offer 30. 包含min函数的栈
@@ -970,8 +1141,6 @@ var groupAnagrams = function (strs) {
     const key = str.split("").sort().join("");
     map.has(key) ? map.get(key).push(str) : map.set(key, [str]);
   });
-
-  // console.log(map);
 
   return Array.from(map.values());
 };
