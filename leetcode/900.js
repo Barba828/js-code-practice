@@ -55,7 +55,28 @@ var shortestToChar = function (s, c) {
     }
     return ans
 }
-console.log("shortestToChar====", shortestToChar("aaba", 'b'));
+// console.log("shortestToChar====", shortestToChar("aaba", 'b'));
+
+/**
+ * @param {string} sentence
+ * @return {string}
+ */
+var toGoatLatin = function (sentence) {
+    const set = new Set(['A', 'E', 'I', 'O', 'U', 'a', 'e', 'i', 'o', 'u'])
+    const arr = sentence.split(' ')
+    for (let i = 0; i < arr.length; i++) {
+        if (!set.has(arr[i][0])) {
+            arr[i] = arr[i].slice(1) + arr[i][0]
+        }
+        arr[i] += 'ma'
+
+        for (let j = 0; j < i + 1; j++) {
+            arr[i] += 'a'
+        }
+    }
+    return arr.join(' ')
+};
+// console.log("toGoatLatin====", toGoatLatin("I speak Goat Latin"));
 
 /**
  * 844. 比较含退格的字符串
@@ -130,38 +151,17 @@ var backspaceCompare = function (s, t) {
 // console.log("backspaceCompare====", backspaceCompare('ab#c', 'ad#c'));
 
 /**
- * 986. 区间列表的交集
- * 给定两个由一些 闭区间 组成的列表，firstList 和 secondList ，其中 firstList[i] = [starti, endi] 而 secondList[j] = [startj, endj] 。每个区间列表都是成对 不相交 的，并且 已经排序 。
- * 返回这 两个区间列表的交集
- * @tag 双指针
- * @param {number[][]} firstList
- * @param {number[][]} secondList
- * @return {number[][]}
+ * 896. 单调数列
+ * @param {number[]} nums
+ * @return {boolean}
  */
-var intervalIntersection = function (firstList, secondList) {
-    let i = 0
-    let j = 0
-    const ans = []
-    // i，j 两个指针分别指向两个数组下标，通过 max/min 获取交集
-    while (i < firstList.length && j < secondList.length) {
-        const lo = Math.max(firstList[i][0], secondList[j][0])
-        const high = Math.min(firstList[i][1], secondList[j][1])
-
-        if (lo <= high) {
-            ans.push([lo, high])
-        }
-
-        // 通过比较区间尾部，有效移动指针
-        if (firstList[i][1] < secondList[j][1]) {
-            i++
-        } else {
-            j++
+var isMonotonic = function (nums) {
+    const step = nums[nums.length - 1] - nums[0] > 0 ? 1 : -1 // +1或-1来保存单调态
+    for (let i = 1; i < nums.length; i++) {
+        if ((nums[i] - nums[i - 1]) * step < 0) { // 使用乘法判断单调态
+            return false;
         }
     }
-    return ans
+    return true
 };
-
-// console.log(
-//     'intervalIntersection====',
-//     intervalIntersection([[0, 2], [5, 10], [13, 23], [24, 25]], [[1, 5], [8, 12], [15, 24], [25, 26]])
-// );
+console.log("isMonotonic====", isMonotonic([2, 2, 2]));

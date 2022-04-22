@@ -121,35 +121,32 @@ var minSubArrayLen = function (target, nums) {
   }
   return len === Infinity ? 0 : len
 };
-console.log('minSubArrayLen====', minSubArrayLen(7, [1, 1, 1]));
+// console.log('minSubArrayLen====', minSubArrayLen(7, [1, 1, 1]));
 
 /**
  * 213. 打家劫舍 II
+ * @tag 动态规划
+ * 和 198. 打家劫舍 相同，只是因为环状所以分割为两次计算 => [ 0, n-1], [ 1, n ]
  * @param {number[]} nums
  * @return {number}
  */
 var rob = function (nums) {
-  if (nums.length === 1) {
-    return nums[0];
+  const len = nums.length
+  if (len < 4) {
+    return Math.max(...nums)
   }
 
   const listMax = (left, right) => {
-    if (right - left <= 1) {
-      return [nums[left]];
+    const dp = new Array(right - left)
+    for (let i = 0; i < right - left; i++) {
+      dp[i] = nums[i + left] + Math.max(dp[i - 2] || 0, dp[i - 3] || 0)
     }
-    const dp = new Array(right - left);
-    dp[0] = nums[left];
-    dp[1] = Math.max(nums[left + 1], nums[left]);
-    for (let i = 2 + left; i < right; i++) {
-      dp[i - left] = Math.max(dp[i - left - 1], dp[i - left - 2] + nums[i]);
-    }
-    return dp;
-  };
+    return dp
+  }
 
-  return Math.max(...listMax(0, nums.length - 1), ...listMax(1, nums.length));
-};
-
-// console.log("rob===", rob([0]));
+  return Math.max(...listMax(0, len - 1), ...listMax(1, len))
+}
+// console.log("rob===", rob([1, 2, 3, 1]));
 
 /**
  * 206. 反转链表

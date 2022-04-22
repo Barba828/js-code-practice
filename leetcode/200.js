@@ -45,6 +45,41 @@ var maxProduct = function (nums) {
 // console.log("maxProduct===", maxProduct([2, -5, -2, -4, 3]));
 
 /**
+ * 153. 寻找旋转排序数组中的最小值
+ * @tag 二分法
+ * @param {number[]} nums
+ * @return {number}
+ */
+var findMin = function (nums) {
+  let left = 0
+  let right = nums.length - 1
+
+  while (left !== right) {
+    const mid = Math.floor((left + right) / 2)
+
+    if (nums[left] > nums[right]) {
+      // left -> right 包含旋转，分两种情况二分判断最小值归属
+      if (nums[left] > nums[mid]) {
+        right = mid
+      } else {
+        left = mid + 1
+      }
+    } else {
+      // 不包含旋转，则最左侧肯定是最小值
+      right = left
+    }
+  }
+
+  return nums[left]
+};
+
+// console.log(
+//   "findMin===",
+//   findMin([4, 5, 6, 7, 0, 1, 2]),
+//   findMin([2, 1])
+// );
+
+/**
  * 155. 最小栈
  * initialize your data structure here.
  */
@@ -248,19 +283,20 @@ var majorityElement = function (nums) {
 
 /**
  * 198. 打家劫舍
+ * @tag 动态规划
+ * dp[i] = nums[i] + max(dp[i - 2], dp[i - 3])
  * @param {number[]} nums
  * @return {number}
  */
 var rob = function (nums) {
-  const dp = [];
-  for (let i = 0; i < nums.length; i++) {
-    dp[i] = Math.max(dp[i - 2] || 0, dp[i - 3] || 0) + nums[i];
+  const len = nums.length
+  const dp = new Array(len)
+  for (let i = 0; i < len; i++) {
+    dp[i] = nums[i] + Math.max(dp[i - 2] || 0, dp[i - 3] || 0)
   }
-  console.log(dp);
-  return Math.max(dp[nums.length - 2] || 0, dp[nums.length - 1] || 0);
+  return Math.max(...dp)
 };
-
-// console.log("rob===", rob([0]));
+console.log("rob===", rob([2, 7, 9, 3, 1]));
 
 /**
  * 200. 岛屿数量

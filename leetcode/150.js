@@ -19,7 +19,6 @@ var isSymmetric = function (root) {
   };
   return compare(root.left, root.right);
 };
-
 // console.log("isSymmetric===", isSymmetric(ArrayToTree([1, 2, 2, 3, 4, 4])));
 
 /**
@@ -52,45 +51,9 @@ var levelOrder = function (root) {
 
   return ans;
 };
-
 // console.log(
 //   "levelOrder===",
 //   levelOrder(ArrayToTree([1, 2, null, 3, null, 4, null, 5]))
-// );
-
-/**
- * 153. 寻找旋转排序数组中的最小值
- * @tag 二分法
- * @param {number[]} nums
- * @return {number}
- */
-var findMin = function (nums) {
-  let left = 0
-  let right = nums.length - 1
-
-  while (left !== right) {
-    const mid = Math.floor((left + right) / 2)
-
-    if (nums[left] > nums[right]) {
-      // left -> right 包含旋转，分两种情况二分判断最小值归属
-      if (nums[left] > nums[mid]) {
-        right = mid
-      } else {
-        left = mid + 1
-      }
-    } else {
-      // 不包含旋转，则最左侧肯定是最小值
-      right = left
-    }
-  }
-
-  return nums[left]
-};
-
-// console.log(
-//   "findMin===",
-//   findMin([4, 5, 6, 7, 0, 1, 2]),
-//   findMin([2, 1])
 // );
 
 /**
@@ -148,6 +111,35 @@ var buildTree = function (preorder, inorder) {
 //   "buildTree===",
 //   buildTree([4, 1, 2, 3, 5], [3, 2, 5, 1, 4]).toString()
 // );
+
+/**
+ * 110. 平衡二叉树
+ * 使用后序遍历由下而上的获取子二叉树高度
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isBalanced = function (root) {
+  const height = (root) => {
+    if (!root) {
+      return 0
+    }
+    const leftHeight = height(root.left)
+    const rightHeight = height(root.right)
+    if (
+      leftHeight === -1 || rightHeight === -1 || Math.abs(leftHeight - rightHeight) > 1
+    ) {
+      return -1
+    } else {
+      return Math.max(leftHeight, rightHeight) + 1
+    }
+  }
+
+  return height(root) !== -1
+};
+console.log(
+  "isBalanced====",
+  isBalanced(ArrayToTree([1, 2, 2, 3, 3, null, null, 4, 4]))
+);
 
 /**
  * 114. 二叉树展开为链表
@@ -344,11 +336,13 @@ var solve = function (board) {
  * @return {number}
  */
 var singleNumber = function (nums) {
-  let ans = 0;
+  let ans = 0
   for (const item of nums) {
-    ans ^= item;
+    ans ^= item
   }
-  return ans;
+  return ans
+  // 实际上一句代码就能写完
+  // return nums.reduce((pre, cur) => pre ^= cur, 0)
 };
 // console.log("singleNumber===", singleNumber([1, 2, 3, 4, 5, 4, 3, 2, 1]));
 

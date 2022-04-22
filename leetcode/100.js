@@ -116,30 +116,24 @@ var canJump = function (nums) {
 
 /**
  * 56. 合并区间
+ * 先排序，再合并连续区间
  * @param {number[][]} intervals
  * @return {number[][]}
  */
 var merge = function (intervals) {
-  let ans = [];
-  intervals.sort((a, b) => a[0] - b[0]);
-  intervals.forEach((item) => {
-    console.log(ans, item);
-    if (ans[ans.length - 1] && item[0] <= ans[ans.length - 1][1]) {
-      ans[ans.length - 1][1] = Math.max(ans[ans.length - 1][1], item[1]);
-    } else {
-      ans.push(item);
-    }
-  });
-  return ans;
-};
+  intervals.sort((a, b) => a[0] - b[0])
+  const ans = [intervals[0]]
 
-// console.log(
-//   "===",
-//   merge([
-//     [1, 4],
-//     [2, 3],
-//   ])
-// );
+  for (let i = 1; i < intervals.length; i++) {
+    if (intervals[i][0] <= ans[ans.length - 1][1]) {
+      ans[ans.length - 1][1] = Math.max(intervals[i][1], ans[ans.length - 1][1])
+    } else {
+      ans.push(intervals[i])
+    }
+  }
+  return ans
+}
+console.log("merge====", merge([[1, 4], [0, 4]]));
 
 /**
  * 62. 不同路径
@@ -237,7 +231,7 @@ var climbStairs = function (n) {
   return dp[2];
 };
 
-console.log("climbStairs====", climbStairs(5));
+// console.log("climbStairs====", climbStairs(5));
 
 /**
  * 72. 编辑距离
@@ -331,8 +325,8 @@ var setZeroes = function (matrix) {
   }
   return matrix
 };
-console.log("setZeroes====", setZeroes([[1, 2, 3, 4], [5, 0, 7, 8], [0, 10, 11, 12], [13, 14, 15, 0]]));
-console.log("setZeroes====", setZeroes([[1, 0, 3]]));
+// console.log("setZeroes====", setZeroes([[1, 2, 3, 4], [5, 0, 7, 8], [0, 10, 11, 12], [13, 14, 15, 0]]));
+// console.log("setZeroes====", setZeroes([[1, 0, 3]]));
 
 /**
  * 74. 搜索二维矩阵
@@ -446,6 +440,8 @@ var numDecodings = function (s) {
 
 /**
  * 75. 颜色分类
+ * @tag 双指针
+ * 左指针 red = 0 ，右指针 blue = length - 1，遍历一遍
  * @param {number[]} nums
  * @return {void} Do not return anything, modify nums in-place instead.
  */
@@ -466,12 +462,40 @@ var sortColors = function (nums) {
     } else {
       point++;
     }
-    console.log(nums, point, blue);
   }
-  return nums;
 };
-
-// console.log("===", sortColors([0, 1, 2, 0, 2, 1, 1]));
+/**
+ * 75. 颜色分类
+ * @tag 双指针
+ * @param {number[]} nums
+ * @param {*} nums 
+ * @returns 
+ */
+var sortColors = function (nums) {
+  // 红白蓝：0 1 2
+  let red = 0, white = 0
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] === 1) {
+      let temp = nums[white]
+      nums[white] = nums[i]
+      nums[i] = temp
+      white++
+    } else if (nums[i] === 0) {
+      let temp = nums[red]
+      nums[red] = nums[i]
+      nums[i] = temp
+      if (red < white) {
+        temp = nums[white]
+        nums[white] = nums[i]
+        nums[i] = temp
+      }
+      red++
+      white++
+    }
+  }
+  return nums
+}
+// console.log("sortColors====", sortColors([0, 1, 2, 0, 2, 1, 1]));
 
 /**
  * 78. 子集

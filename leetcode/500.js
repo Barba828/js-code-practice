@@ -30,5 +30,16 @@ var findAnagrams = function (s, p) {
 
     return ans
 };
+// console.log("findAnagrams====", findAnagrams("abcab", "ab"));
 
-console.log("findAnagrams====", findAnagrams("abcab", "ab"));
+/**
+ * 459. 重复的子字符串
+ * 若是有重复的子字符串那么 s 一定是 s + s 的子串，并且重复起始点会出现在[1, s.length - 2]中
+ * 这里判断子串可以由 kmp 算法实现
+ * @param {string} s
+ * @return {boolean}
+ */
+var repeatedSubstringPattern = function (s) {
+    return (s + s).indexOf(s, 1) !== s.length
+};
+console.log("repeatedSubstringPattern====", repeatedSubstringPattern("abab"));
