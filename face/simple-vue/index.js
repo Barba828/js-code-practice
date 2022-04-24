@@ -1,19 +1,32 @@
+/**
+ * 发布订阅模式实现双向数据流 By Object.defineProperty
+ * 
+ * 1. Observer，劫持监听所有属性
+ *      get方法 => 新增 watcher 观察者到 dep 发布者的订阅列表subs中
+ *      set方法 => dep 发布者通知所有观察者更新
+ * 2. Dep，发布者
+ *      notify => 通知 watcher 观察者更新
+ *      depend => 添加 watcher 观察者到订阅列表subs中
+ * 3. Wathcer，订阅者
+ *      update => 更新，同时会调用 get 方法新增 watcher 订阅者
+ *      addDep => 将新增的 watcher 订阅者添加到 dep 发布者的订阅列表subs中
+ */
 const Vue = (function () {
     let uid = 0;
 
-    // 订阅发布管理员，用于储存订阅者并发布消息
+    // 发布者，用于储存订阅者并发布消息
     class Dep {
         constructor() {
-            // 设置id,用于区分新Watcher和只改变属性值后新产生的Watcher
+            // 设置 id，用于区分新 Watcher 和只改变属性值后新产生的 Watcher
             this.id = uid++;
             // 储存订阅者的数组
             this.subs = [];
         }
-        // 触发target上的Watcher中的addDep方法,参数为dep的实例本身
+        // 触发target上的 Watcher 中的 addDep 方法,参数为 dep 的实例本身
         depend() {
             Dep.target.addDep(this);
         }
-        // 添加订阅者
+        // 添加订阅者，sub 即一个 Watcher 实例 
         addSub(sub) {
             this.subs.push(sub);
         }
@@ -22,7 +35,7 @@ const Vue = (function () {
             this.subs.forEach(sub => sub.update());
         }
     }
-    // 为Dep类设置一个静态属性,默认为null,工作时指向当前的Watcher
+    // 为Dep类设置一个静态属性,默认为null,工作时指向当前的 Watcher 实例
     Dep.target = null;
 
     // 监听者，监听对象属性值的变化
@@ -41,16 +54,19 @@ const Vue = (function () {
         }
     }
     function defineReactive(obj, key, val) {
+        // 监听数据新增发布管理员
+        // get 时 dep 执行 depend 添加订阅者
+        // set 时 dep 执行 notify 通知全部订阅者
         const dep = new Dep();
-        // 给当前属性的值添加监听
+        // 递归 继续给当前属性的值添加深度监听 deep
         let chlidOb = observe(val);
         Object.defineProperty(obj, key, {
             enumerable: true,
             configurable: true,
             get: () => {
-                // 如果Dep类存在target属性，将其添加到dep实例的subs数组中
-                // target指向一个Watcher实例，每个Watcher都是一个订阅者
-                // Watcher实例在实例化过程中，会读取data中的某个属性，从而触发当前get方法
+                // 如果 Dep 类存在 target 属性（即该属性正在被监听 watch），将其添加到dep实例的subs数组中
+                // target 指向一个 Watcher 实例，每个 Watcher 都是一个订阅者
+                // Watcher 实例在实例化过程中，会读取 data 中的某个属性，从而触发当前 get 方法
                 if (Dep.target) {
                     dep.depend();
                 }
@@ -59,9 +75,9 @@ const Vue = (function () {
             set: newVal => {
                 if (val === newVal) return;
                 val = newVal;
-                // 对新值进行监听
+                // 递归 对新值进行深度监听
                 chlidOb = observe(newVal);
-                // 通知所有订阅者，数值被改变了
+                // 通知所有订阅者，数值被改变，Watcher 会直接读取 data 中的值并执行 cb 回调函数
                 dep.notify();
             },
         });
@@ -87,9 +103,10 @@ const Vue = (function () {
         update() {
             this.run();
         }
+        // dep 发布者 Dep 实例，将当前 Watcher 实例添加到 dep 的 subs 数组中
         addDep(dep) {
-            // 如果在depIds的hash中没有当前的id,可以判断是新Watcher,因此可以添加到dep的数组中储存
-            // 此判断是避免同id的Watcher被多次储存
+            // 如果在 depIds 的 hash 中没有当前的 id ，可以判断是新 Watcher ，因此可以添加到 dep 的数组中储存
+            // 此判断是避免同 id 的 Watcher 被多次储存
             if (!this.depIds.hasOwnProperty(dep.id)) {
                 dep.addSub(this);
                 this.depIds[dep.id] = dep;
@@ -97,7 +114,6 @@ const Vue = (function () {
         }
         run() {
             const val = this.get();
-            console.log('Watcher run', this);
             if (val !== this.val) {
                 this.val = val;
                 this.cb.call(this.vm, val);
@@ -105,12 +121,18 @@ const Vue = (function () {
         }
         get() {
             // 当前订阅者(Watcher)读取被订阅数据的最新更新后的值时，通知订阅者管理员收集当前订阅者
+            // 1.更新 Dep.target 为当前 Watcher 实例
             Dep.target = this;
-            const val = this.vm._data[this.expOrFn];
-            // 置空，用于下一个Watcher使用
+            // 2.从vm中获取值，触发观察者 get 方法，使用当前 Dep.target：dep.depend()方法将该 Watcher 实例添加到订阅者列表(dep.subs)中
+            let value;
+            if (typeof this.expOrFn === 'function') {
+                value = this.expOrFn.call(this.vm);
+            } else if (typeof this.expOrFn === 'string') {
+                value = this.vm[this.expOrFn];
+            }
+            // 3.清除 Dep.target ，用于下一个Watcher使用
             Dep.target = null;
-            console.log('Watcher get', val);
-            return val;
+            return value;
         }
     }
 
@@ -147,6 +169,14 @@ const Vue = (function () {
 let demo = new Vue({
     data: {
         text: '',
+        person: {
+            name: 'jobs',
+            age: 42,
+            gender: 'male'
+        },
+        room: {
+            title: 'steve'
+        }
     },
 });
 
@@ -155,8 +185,14 @@ const input = document.getElementById('input');
 
 input.addEventListener('keyup', function (e) {
     demo.text = e.target.value;
+    demo.person.name = e.target.value + '-name';
+    demo.room = {
+        title: e.target.value + '-title'
+    }
 });
 
 demo.$watch('text', str => p.innerHTML = str);
+demo.$watch('room', room => console.log(room.title));
+demo.$watch(function () { return this.person.name }, name => console.log(name));
 
 console.log('this is simple-vue');
