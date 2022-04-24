@@ -136,10 +136,10 @@ var isBalanced = function (root) {
 
   return height(root) !== -1
 };
-console.log(
-  "isBalanced====",
-  isBalanced(ArrayToTree([1, 2, 2, 3, 3, null, null, 4, 4]))
-);
+// console.log(
+//   "isBalanced====",
+//   isBalanced(ArrayToTree([1, 2, 2, 3, 3, null, null, 4, 4]))
+// );
 
 /**
  * 114. 二叉树展开为链表
@@ -539,5 +539,26 @@ var sortList = function (head) {
   };
   return toSortList(head, null);
 };
-
 // console.log("sortList===", sortList(ArrayToList([3, 2, 0, 4, 5])).toString());
+
+/**
+ * 150. 逆波兰表达式求值
+ * @param {string[]} tokens
+ * @return {number}
+ */
+var evalRPN = function (tokens) {
+  const stack = []
+  const map = new Map([['+', (a, b) => a + b], ['-', (a, b) => a - b], ['*', (a, b) => a * b], ['/', (a, b) => a / b]])
+  while (tokens.length > 0) {
+    let item = tokens.shift()
+    if (map.has(item)) {
+      const b = stack.pop()
+      const a = stack.pop()
+      item = parseInt(map.get(item)(a, b))
+    }
+    stack.push(Number(item))
+  }
+  return stack.pop()
+};
+console.log("evalRPN====", evalRPN(["4", "-2", "/", "2", "-3", "-", "-"]));
+
