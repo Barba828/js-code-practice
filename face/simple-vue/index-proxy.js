@@ -187,15 +187,7 @@ let demo = new Vue({
         room: {
             title: 'steve'
         }
-    }),
-    computed: {
-        change() {
-            return 2;
-        },
-        click() {
-            return 3;
-        },
-    },
+    })
 });
 
 const p = document.getElementById('p');
