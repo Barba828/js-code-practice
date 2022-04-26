@@ -1,4 +1,18 @@
 /**
+ * 258. 各位相加
+ * @param {number} num
+ * @return {number}
+ */
+var addDigits = function (num) {
+  if (num === 0) {
+    return num;
+  }
+  return num % 9 === 0 ? 9 : num % 9;
+};
+
+// console.log('addDigits====', addDigits(38));
+
+/**
  * 279. 完全平方数
  * 贪心算法
  * @param {number} n
@@ -102,5 +116,33 @@ var findDuplicate = function (nums) {
   }
   return slow; // 环入口即是重复的数字
 };
-// console.log("findDuplicate===" + findDuplicate([3, 1, 3, 4, 2]));
-console.log("findDuplicate===" + findDuplicate([3, 1, 2, 2, 4]));
+// console.log("findDuplicate===" + findDuplicate([3, 1, 2, 2, 4]));
+
+
+/**
+ * 300. 最长递增子序列
+ * @tag 动态规划
+ * 和 435. 无重叠区间 解法相似
+ * @param {number[]} nums
+ * @return {number}
+ */
+var lengthOfLIS = function (nums) {
+  if (nums.length == 0) {
+    return 0;
+  }
+  const len = nums.length
+  const dp = new Array(len).fill(1)
+
+  for (let i = 1; i < len; i++) {
+    // 更新dp[i]: 遍历 0 - i
+    for (let j = 0; j < i; j++) {
+      if (nums[j] < nums[i]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1)
+      }
+    }
+  }
+
+  return Math.max(...dp)
+}
+
+// console.log("lengthOfLIS===" + lengthOfLIS([1]));

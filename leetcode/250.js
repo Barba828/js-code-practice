@@ -421,21 +421,6 @@ var searchMatrix = function (matrix, target) {
   }
   return false;
 };
-
-/**
- * 258. 各位相加
- * @param {number} num
- * @return {number}
- */
-var addDigits = function (num) {
-  if (num === 0) {
-    return num;
-  }
-  return num % 9 === 0 ? 9 : num % 9;
-};
-
-// console.log('addDigits====', addDigits(38));
-
 // console.log(
 //   "searchMatrix===" +
 //     searchMatrix(

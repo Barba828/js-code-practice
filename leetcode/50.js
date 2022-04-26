@@ -49,7 +49,7 @@ var addTwoNumbers = function (l1, l2) {
   }
   return head
 };
-console.log("addTwoNumbers====", addTwoNumbers(ArrayToList([0]), ArrayToList([7, 3])));
+// console.log("addTwoNumbers====", addTwoNumbers(ArrayToList([0]), ArrayToList([7, 3])));
 
 /**
  * 3. 无重复字符的最长子串
@@ -1095,38 +1095,32 @@ var permute = function (nums) {
  * @return {void} Do not return anything, modify matrix in-place instead.
  */
 var rotate = function (matrix) {
-  let r = parseInt(matrix.length / 2);
-  for (let layer = 0; layer < r; layer++) {
+  const len = matrix.length
+  for (let layer = 0; layer < Math.floor(len / 2); layer++) {
     //该层原左上角 matrix[layer][layer]
-    let size = matrix.length - 2 * layer;
+    let size = len - 2 * layer;
     for (let index = 0; index < size - 1; index++) {
-      // console.log("开始0", matrix);
       let temp = matrix[layer][layer + index];
       matrix[layer][layer + index] =
-        matrix[matrix.length - 1 - layer - index][layer];
-      // console.log("开始1", matrix);
-      matrix[matrix.length - 1 - layer - index][layer] =
-        matrix[matrix.length - 1 - layer][matrix.length - 1 - layer - index];
-      // console.log("开始2", matrix);
-      matrix[matrix.length - 1 - layer][matrix.length - 1 - layer - index] =
-        matrix[layer + index][matrix.length - 1 - layer];
-      // console.log("开始3", matrix);
-      matrix[layer + index][matrix.length - 1 - layer] = temp;
-      // console.log("结束", matrix);
+        matrix[len - 1 - layer - index][layer];
+      matrix[len - 1 - layer - index][layer] =
+        matrix[len - 1 - layer][len - 1 - layer - index];
+      matrix[len - 1 - layer][len - 1 - layer - index] =
+        matrix[layer + index][len - 1 - layer];
+      matrix[layer + index][len - 1 - layer] = temp;
     }
   }
   return matrix;
 };
-
-// console.log(
-//   "ans----",
-//   rotate([
-//     [1, 2, 3, 4],
-//     [5, 6, 7, 8],
-//     [9, 10, 11, 12],
-//     [13, 14, 15, 16],
-//   ])
-// );
+console.log(
+  "rotate----",
+  rotate([
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12],
+    [13, 14, 15, 16],
+  ])
+);
 
 /**
  * 49. 字母异位词分组

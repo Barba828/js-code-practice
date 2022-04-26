@@ -1,4 +1,58 @@
 /**
+ * 435. 无重叠区间
+ * @tag 动态规划
+ * 本质上就是 300. 最长递增子序列
+ * @param {number[][]} intervals
+ * @return {number}
+ */
+var eraseOverlapIntervals = function (intervals) {
+    if (!intervals.length) {
+        return 0
+    }
+    intervals.sort((a, b) => a[0] - b[0])
+
+    const len = intervals.length
+    const dp = new Array(len).fill(1) // dp存储前 i 个位置数量最多的不重叠区间
+
+    for (let i = 1; i < len; i++) {
+        // 更新 dp[i]：遍历小于 i 的区间，选择所有区间右侧小于等于区间 i 左侧
+        for (let j = 0; j < i; j++) {
+            if (intervals[j][1] <= intervals[i][0]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1)
+            }
+        }
+    }
+
+    return len - Math.max(...dp) // n - max(dp[i]) 即去掉最少的区间
+};
+/**
+ * 435. 无重叠区间
+ * @tag 贪心算法
+ * 可以理解为会议室约定选择开最多会议的方案，每一个区间是会议的起始时间
+ * 那么根据贪心算法，应按照结束时间排序
+ * 之后遍历，贪心的加入新会议并更新最晚结束时间
+ */
+var eraseOverlapIntervals = function (intervals) {
+    if (!intervals.length) {
+        return 0
+    }
+    intervals.sort((a, b) => a[1] - b[1]) // 按会议结束时间排序
+
+    const len = intervals.length
+    let right = intervals[0][1] // right：最晚结束时间
+    let ans = 1 // ans：已添加的会议数
+    for (let i = 1; i < len; ++i) {
+        // 遍历，当前会议开始时间小于最晚结束时间，则加入会议，更新最晚结束时间
+        if (intervals[i][0] >= right) {
+            ++ans
+            right = intervals[i][1]
+        }
+    }
+    return len - ans
+}
+console.log("eraseOverlapIntervals====", eraseOverlapIntervals([[1, 2], [2, 3], [3, 4], [1, 3]]));
+
+/**
  * 438. 找到字符串中所有字母异位词
  * @tag 滑动窗口协议
  * @param {string} s
@@ -42,4 +96,4 @@ var findAnagrams = function (s, p) {
 var repeatedSubstringPattern = function (s) {
     return (s + s).indexOf(s, 1) !== s.length
 };
-console.log("repeatedSubstringPattern====", repeatedSubstringPattern("abab"));
+// console.log("repeatedSubstringPattern====", repeatedSubstringPattern("abab"));

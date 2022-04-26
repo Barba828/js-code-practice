@@ -133,7 +133,35 @@ var merge = function (intervals) {
   }
   return ans
 }
-console.log("merge====", merge([[1, 4], [0, 4]]));
+// console.log("merge====", merge([[1, 4], [0, 4]]));
+
+/**
+ * 59. 螺旋矩阵 II
+ * @param {number} n
+ * @return {number[][]}
+ */
+var generateMatrix = function (n) {
+  const ans = new Array(n).fill(0).map(() => new Array(n))
+  const layerHeight = Math.floor(n / 2)
+  ans[layerHeight][layerHeight] = n * n
+  let count = 0
+  for (let layer = 0; layer < layerHeight; layer++) {
+    for (let i = layer; i < n - layer - 1; i++) {
+      ans[layer][i] = ++count
+    }
+    for (let i = layer; i < n - layer - 1; i++) {
+      ans[i][n - layer - 1] = ++count
+    }
+    for (let i = layer; i < n - layer - 1; i++) {
+      ans[n - layer - 1][n - 1 - i] = ++count
+    }
+    for (let i = layer; i < n - layer - 1; i++) {
+      ans[n - 1 - i][layer] = ++count
+    }
+  }
+  return ans
+};
+console.log("generateMatrix====", generateMatrix(1));
 
 /**
  * 62. 不同路径

@@ -202,6 +202,24 @@ var connect = function (root) {
 // console.log("connect===", connect(ArrayToTree([])));
 
 /**
+ * 119. 杨辉三角 II
+ * @param {number} rowIndex
+ * @return {number[]}
+ */
+var getRow = function (rowIndex) {
+  let ans = [1]
+  for (let i = 1; i < rowIndex + 1; i++) {
+    const temp = new Array(i + 1).fill(1)
+    for (let j = 1; j < i; j++) {
+      temp[j] = ans[j - 1] + ans[j]
+    }
+    ans = temp
+  }
+  return ans
+};
+console.log("getRow===", getRow(1));
+
+/**
  * 121. 买卖股票的最佳时机
  * 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格
  * 求差值，相当于计算最大连续区间值

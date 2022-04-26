@@ -1,35 +1,6 @@
 import { ArrayToTree, ArrayToList, ListNode } from "../structure/index.js";
 
 /**
- * 300. 最长递增子序列
- * @param {number[]} nums
- * @return {number}
- */
-var lengthOfLIS = function (nums) {
-  if (nums.length == 0) {
-    return 0;
-  }
-  const dp = new Array(nums.length);
-  dp[0] = 1;
-  let maxans = 1;
-  //从1开始计算dp[i]
-  for (let i = 1; i < nums.length; i++) {
-    dp[i] = 1;
-    //从0到i遍历，根据动规数组获取当前i最优解
-    for (let j = 0; j < i; j++) {
-      if (nums[i] > nums[j]) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
-      }
-    }
-    //更新最大值
-    maxans = Math.max(maxans, dp[i]);
-  }
-  return maxans;
-};
-
-// console.log("lengthOfLIS===" + lengthOfLIS([3, 1, 3, 4, 2]));
-
-/**
  * 301. 删除无效的括号
  * 1.第一遍遍历获取要删除的左括号或者右括号长度
  * 2.通过深度优先遍历获取删除可能的所有括号的结果

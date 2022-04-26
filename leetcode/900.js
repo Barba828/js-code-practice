@@ -151,6 +151,32 @@ var backspaceCompare = function (s, t) {
 // console.log("backspaceCompare====", backspaceCompare('ab#c', 'ad#c'));
 
 /**
+ * 883. 三维形体投影面积
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var projectionArea = function (grid) {
+    let x = 0, y = 0, z = 0, zMax = 0, yMax = []
+    // x 列遍历
+    for (let i = 0; i < grid.length; i++) {
+        // 该列 y 行遍历
+        for (let j = 0; j < grid[i].length; j++) {
+            // z 轴高度
+            const height = grid[i][j]
+            height > 0 && x++
+            zMax = Math.max(zMax, height)
+            yMax[j] = Math.max(yMax[j] || 0, height)
+        }
+        z += zMax
+        zMax = 0
+    }
+    y = yMax.reduce((pre, cur) => cur + pre)
+    return x + y + z
+};
+console.log("projectionArea====", projectionArea([[1, 0], [0, 2]]));
+
+
+/**
  * 896. 单调数列
  * @param {number[]} nums
  * @return {boolean}
@@ -164,4 +190,4 @@ var isMonotonic = function (nums) {
     }
     return true
 };
-console.log("isMonotonic====", isMonotonic([2, 2, 2]));
+// console.log("isMonotonic====", isMonotonic([2, 2, 2]));
