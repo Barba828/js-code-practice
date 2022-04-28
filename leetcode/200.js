@@ -282,6 +282,32 @@ var majorityElement = function (nums) {
 // console.log("majorityElement===", majorityElement([1, 2, 1, 2, 1, 2, 1]));
 
 /**
+ * 173. 二叉搜索树迭代器
+ * @param {TreeNode} root
+ */
+var BSTIterator = function (root) {
+  this.iterrator = []
+  const stack = []
+  while (root !== null || stack.length > 0) {
+    while (root) {
+      stack.push(root)
+      root = root.left
+    }
+    if (stack.length > 0) {
+      const node = stack.pop()
+      this.iterrator.push(node.val)
+      root = node.right
+    }
+  }
+};
+BSTIterator.prototype.next = function () {
+  return this.iterrator.shift()
+};
+BSTIterator.prototype.hasNext = function () {
+  return this.iterrator.length > 0
+};
+
+/**
  * 198. 打家劫舍
  * @tag 动态规划
  * dp[i] = nums[i] + max(dp[i - 2], dp[i - 3])

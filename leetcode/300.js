@@ -1,3 +1,5 @@
+import { ArrayToTree, TreeNode } from "../structure/index.js";
+
 /**
  * 258. 各位相加
  * @param {number} num
@@ -118,6 +120,52 @@ var findDuplicate = function (nums) {
 };
 // console.log("findDuplicate===" + findDuplicate([3, 1, 2, 2, 4]));
 
+
+/**
+ * 297. 二叉树的序列化与反序列化
+ * Encodes a tree to a single string.
+ * 序列化
+ * @param {TreeNode} root
+ * @return {string}
+ */
+var serialize = function (root) {
+  let preorder = ''
+  const rserialize = (node) => {
+    if (!node) {
+      preorder += '#,'
+      return
+    }
+
+    preorder += node.val + ','
+    rserialize(node.left)
+    rserialize(node.right)
+  }
+  rserialize(root)
+  return preorder
+};
+/**
+ * Decodes your encoded data to tree.
+ * 反序列化
+ * @param {string} data
+ * @return {TreeNode}
+ */
+var deserialize = function (data) {
+  const preorder = data.split(',')
+  const rdeserialize = (order) => {
+    const value = order.shift()
+    if (value === '#') {
+      return null
+    }
+
+    return new TreeNode(Number(value), rdeserialize(order), rdeserialize(order))
+  }
+
+  console.log(preorder);
+  return rdeserialize(preorder)
+};
+// const serials = serialize(ArrayToTree([1, 2, 3, null, null, 4, 5]))
+// console.log("serialize===", serials);
+// console.log("deserialize===", deserialize(serials));
 
 /**
  * 300. 最长递增子序列

@@ -267,14 +267,32 @@ var invertTree = function (root) {
 // console.log("invertTree===" + tree);
 
 /**
+ * 230. 二叉搜索树中第K小的元素
+ * 中序遍历到第 k 位即可
  * @param {TreeNode} root
  * @param {number} k
  * @return {number}
  */
 var kthSmallest = function (root, k) {
+  const stack = []
+  let num = 0
+  while (root !== null || stack.length > 0) {
+    while (root) {
+      stack.push(root)
+      root = root.left
+    }
+    if (stack.length > 0) {
+      num++
+      const node = stack.pop()
+      if (num === k) {
+        return node.val
+      }
 
+      root = node.right
+    }
+  }
 };
-console.log("kthSmallest===", kthSmallest(ArrayToTree([3, 1, 4, null, 2]), 1));
+// console.log("kthSmallest===", kthSmallest(ArrayToTree([5, 1, 8, null, 2]), 3));
 
 /**
  * 234. 回文链表
@@ -312,35 +330,68 @@ var isPalindrome = function (head) {
 // console.log("isPalindrome===" + isPalindrome(ArrayToList([1, 2, 3, 3, 2, 1])));
 
 /**
+ * 236. 二叉树的最近公共祖先
+ * 1. 递归寻找，当一个节点满足：存在 p 和 q 都在子节点，则返回该节点
  * @param {TreeNode} root
  * @param {TreeNode} p
  * @param {TreeNode} q
  * @return {TreeNode}
  */
 var lowestCommonAncestor = function (root, p, q) {
-  if (root === p || root === q) {
-    return root;
-  }
-  if (root !== null) {
-    const lNode = lowestCommonAncestor(root.left, p, q);
-    const rNode = lowestCommonAncestor(root.right, p, q);
-    if (lNode !== null && rNode !== null) return root;
-    else if (lNode === null) {
-      //两个都在右子树
-      return rNode;
-    } else {
-      //两个都在左子树里面
-      return lNode;
+  if (!root) return null;
+  if (root === p || root === q) return root;
+
+  const lNode = lowestCommonAncestor(root.left, p, q); // 保存左子节点，无 p/q 返回null
+  const rNode = lowestCommonAncestor(root.right, p, q); // 保存右子节点，无 p/q 返回null
+
+  // 公共父节点
+  if (lNode !== null && rNode !== null) return root;
+  // 两个都在右子树
+  else if (lNode === null) return rNode;
+  // 两个都在左子树
+  else return lNode;
+};
+/**
+ * 236. 二叉树的最近公共祖先
+ * 2. 分别从 p/q 由低向上查找，查找第一个已遍历节点
+ */
+var lowestCommonAncestor = function (root, p, q) {
+  const parent = new Map() // 保存节点的父节点指向
+  const visited = new Set() // 保存已遍历节点
+
+  // dfs 遍历生成 parent
+  const stack = [root]
+  while (stack.length > 0) {
+    const node = stack.pop()
+    if (node.right) {
+      parent.set(node.right.val, node)
+      stack.push(node.right)
+    }
+    if (node.left) {
+      parent.set(node.left.val, node)
+      stack.push(node.left)
     }
   }
-  return null;
-};
 
-// const tree = ArrayToTree([3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]);
-// console.log(
-//   "lowestCommonAncestor===" +
-//     lowestCommonAncestor(tree, tree.get(5), tree.get(4))
-// );
+  // 根据 p 点路径生成 visited
+  while (p) {
+    visited.add(p.val)
+    p = parent.get(p.val)
+  }
+
+  // 根据 q 点和 visited 查询父节点
+  while (true) {
+    if (visited.has(q.val)) {
+      return q
+    }
+    q = parent.get(q.val)
+  }
+}
+const tree = ArrayToTree([3, 5, 1, 6, 2, 0, 8, null, null, 7, 4]);
+console.log(
+  "lowestCommonAncestor===" +
+  lowestCommonAncestor(tree, tree.get(5), tree.get(1))
+);
 
 /**
  * 238. 除自身以外数组的乘积

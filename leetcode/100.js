@@ -606,16 +606,19 @@ var exist = function (board, word) {
  */
 var inorderTraversal = function (root) {
   //1.迭代算法
-  const ans = new Array();
-  const next = (node) => {
-    if (!node || node.val === null) {
-      return;
+  const stack = [];
+  const ans = [];
+  let temp = root;
+  //从temp左子节点DFS
+  while (stack.length !== 0 || temp) {
+    while (temp !== null) {
+      stack.push(temp);
+      temp = temp.left;
     }
-    node.left && next(node.left);
+    const node = stack.pop();
     ans.push(node.val);
-    node.right && next(node.right);
-  };
-  next(root);
+    temp = node.right;
+  }
   return ans;
 
   //2.递归算法
