@@ -1,4 +1,4 @@
-import { ArrayToList, ListNode } from "../structure/index.js";
+import { ArrayToList, ArrayToTree, ListNode } from "../structure/index.js";
 
 /**
  * 151. 翻转字符串里的单词
@@ -184,27 +184,27 @@ var getIntersectionNode = function (headA, headB) {
   return pA
 };
 /**
- * 160. 相交链表
+ * 160. 相交链表 2
  * Hash法
  */
-// var getIntersectionNode = function (headA, headB) {
-//   const set = new Set()
-//   while (headA) {
-//     set.add(headA)
-//     headA = headA.next
-//   }
-//   while (headB) {
-//     if (set.has(headB)) {
-//       return headB
-//     }
-//     headB = headB.next
-//   }
-//   return null
-// }
-console.log(
-  "getIntersectionNode====",
-  getIntersectionNode(ArrayToList([1, 3, 5, 7, 9, 11]), ArrayToList([2, 4, 5, 8, 10]))
-);
+var getIntersectionNode = function (headA, headB) {
+  const set = new Set()
+  while (headA) {
+    set.add(headA)
+    headA = headA.next
+  }
+  while (headB) {
+    if (set.has(headB)) {
+      return headB
+    }
+    headB = headB.next
+  }
+  return null
+}
+// console.log(
+//   "getIntersectionNode====",
+//   getIntersectionNode(ArrayToList([1, 3, 5, 7, 9, 11]), ArrayToList([2, 4, 5, 8, 10]))
+// );
 
 /**
  * 162. 寻找峰值
@@ -296,7 +296,31 @@ var rob = function (nums) {
   }
   return Math.max(...dp)
 };
-console.log("rob===", rob([2, 7, 9, 3, 1]));
+// console.log("rob===", rob([2, 7, 9, 3, 1]));
+
+/**
+ * 199. 二叉树的右视图
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var rightSideView = function (root) {
+  const stack = [root]
+  const ans = []
+  while (stack.length > 0) {
+    const len = stack.length
+    stack[len - 1] && ans.push(stack[len - 1].val)
+
+    for (let i = 0; i < len; i++) {
+      const node = stack.shift()
+      if (node) {
+        node.left && stack.push(node.left)
+        node.right && stack.push(node.right)
+      }
+    }
+  }
+  return ans
+};
+// console.log("rightSideView===", rightSideView(ArrayToTree([1, 2])));
 
 /**
  * 200. 岛屿数量

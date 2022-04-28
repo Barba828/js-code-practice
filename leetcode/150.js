@@ -52,9 +52,48 @@ var levelOrder = function (root) {
   return ans;
 };
 // console.log(
-//   "levelOrder===",
+//   "levelOrder====",
 //   levelOrder(ArrayToTree([1, 2, null, 3, null, 4, null, 5]))
 // );
+
+/**
+ * 103. 二叉树的锯齿形层序遍历
+ * @param {TreeNode} root
+ * @return {number[][]}
+ */
+var zigzagLevelOrder = function (root) {
+  const ans = []
+  let stack = [root]
+  let flag = false
+
+  while (stack.length > 0) {
+    const layer = []
+    const temp = []
+    const len = stack.length
+
+    for (let i = 0; i < len; i++) {
+      const node = stack.pop()
+      if (!node) continue
+
+      layer.push(node.val)
+      if (flag) {
+        temp.push(node.right)
+        temp.push(node.left)
+      } else {
+        temp.push(node.left)
+        temp.push(node.right)
+      }
+    }
+
+    flag = !flag
+    stack = temp
+    if (layer.length > 0) {
+      ans.push(layer)
+    }
+  }
+  return ans
+};
+// console.log("zigzagLevelOrder====", zigzagLevelOrder(ArrayToTree([3, 9, 20, null, null, 15, 7])));
 
 /**
  * 104. 二叉树的最大深度
@@ -72,7 +111,6 @@ var maxDepth = function (root) {
   nextLayer(root, 1);
   return max;
 };
-
 // console.log("maxDepth===", maxDepth(ArrayToTree([3, 9, 20, null, null, 15, 7])));
 
 /**
@@ -83,34 +121,46 @@ var maxDepth = function (root) {
  */
 var buildTree = function (preorder, inorder) {
   /**
-   * 获取子树
-   * @param {*} preLeft 前序数组起始下标
-   * @param {*} inLeft 中序数组起始下标
-   * @param {*} length 数组长度
-   * @returns
+   * @param {*} preLeft 子树前序开始下标, [preLeft, preLeft + length]
+   * @param {*} inLeft 子树中序开始下标, [inLeft, inLeft + length]
+   * @param {*} length 子树长度
+   * @returns 
    */
-  const childTree = (preLeft, inLeft, length) => {
-    const root = new TreeNode(preorder[preLeft]); //前序首位为根节点
-    const inRoot = inorder.indexOf(preorder[preLeft]); //中序查找根节点位置，该位置左侧为左子树，右侧为右子树
-    const leftLength = inRoot - inLeft; //左子树长度
-    const rightLength = length - leftLength - 1; //右子树长度
-    //存在左子树
-    if (leftLength > 0) {
-      root.left = childTree(preLeft + 1, inLeft, leftLength);
+  const setTree = (preLeft, inLeft, length) => {
+    if (length <= 0) {
+      return null
     }
-    //存在右子树
-    if (rightLength > 0) {
-      root.right = childTree(preLeft + 1 + leftLength, inRoot + 1, rightLength);
-    }
-    return root;
-  };
-  return childTree(0, 0, preorder.length);
-};
+    const inMid = inorder.indexOf(preorder[preLeft]) // head 节点在中序遍历中位置，inMid左侧为左子树，右侧为右子树
+    const leftTreeLength = inMid - inLeft // 左子树长度
+    const rightTreeLength = length - leftTreeLength - 1 // 右子树长度
+    return new TreeNode(
+      preorder[preLeft],
+      setTree(preLeft + 1, inLeft, leftTreeLength),
+      setTree(preLeft + 1 + leftTreeLength, inMid + 1, rightTreeLength))
+  }
 
-// console.log(
-//   "buildTree===",
-//   buildTree([4, 1, 2, 3, 5], [3, 2, 5, 1, 4]).toString()
-// );
+  return setTree(0, 0, preorder.length)
+};
+// console.log("buildTree===", buildTree([3, 9, 4, 6, 20, 15, 7], [4, 9, 6, 3, 15, 20, 7]).toString());
+
+/**
+ * 108. 将有序数组转换为二叉搜索树
+ * @param {number[]} nums
+ * @return {TreeNode}
+ */
+var sortedArrayToBST = function (nums) {
+  // 递归函数，因为有序，所以每次从范围[left, right]中取 mid 作为父节点
+  // 递归左子[left, mid - 1]，递归右子[mid + 1, right]
+  const setTree = (left, right) => {
+    if (left > right) {
+      return null
+    }
+    const mid = Math.floor((right + left) / 2)
+    return new TreeNode(nums[mid], setTree(left, mid - 1), setTree(mid + 1, right))
+  }
+  return setTree(0, nums.length - 1)
+};
+// console.log("sortedArrayToBST===", sortedArrayToBST([-10, -3, 0, 5, 9]));
 
 /**
  * 110. 平衡二叉树
@@ -140,6 +190,33 @@ var isBalanced = function (root) {
 //   "isBalanced====",
 //   isBalanced(ArrayToTree([1, 2, 2, 3, 3, null, null, 4, 4]))
 // );
+
+/**
+ * 113. 路径总和 II
+ * @param {TreeNode} root
+ * @param {number} targetSum
+ * @return {number[][]}
+ */
+var pathSum = function (root, targetSum) {
+  if (!root) {
+    return []
+  }
+  const ans = []
+  const findWay = (node, values) => {
+    values.push(node.val)
+    if (!node.left && !node.right) {
+      if (values.reduce((pre, cur) => pre + cur) === targetSum) {
+        ans.push(values)
+      }
+      return
+    }
+    node.left && findWay(node.left, [...values])
+    node.right && findWay(node.right, [...values])
+  }
+  findWay(root, [])
+  return ans
+};
+// console.log("pathSum====", pathSum(ArrayToTree([5, 4, 8, 11, null, 13, 4, 7, 2, null, null, 5, 1]), 22));
 
 /**
  * 114. 二叉树展开为链表
@@ -217,7 +294,7 @@ var getRow = function (rowIndex) {
   }
   return ans
 };
-console.log("getRow===", getRow(1));
+// console.log("getRow===", getRow(1));
 
 /**
  * 121. 买卖股票的最佳时机
@@ -578,5 +655,5 @@ var evalRPN = function (tokens) {
   }
   return stack.pop()
 };
-console.log("evalRPN====", evalRPN(["4", "-2", "/", "2", "-3", "-", "-"]));
+// console.log("evalRPN====", evalRPN(["4", "-2", "/", "2", "-3", "-", "-"]));
 

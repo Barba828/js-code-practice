@@ -1,3 +1,5 @@
+import { ArrayToTree } from "../structure/index.js";
+
 /**
  * 435. 无重叠区间
  * @tag 动态规划
@@ -50,7 +52,7 @@ var eraseOverlapIntervals = function (intervals) {
     }
     return len - ans
 }
-console.log("eraseOverlapIntervals====", eraseOverlapIntervals([[1, 2], [2, 3], [3, 4], [1, 3]]));
+// console.log("eraseOverlapIntervals====", eraseOverlapIntervals([[1, 2], [2, 3], [3, 4], [1, 3]]));
 
 /**
  * 438. 找到字符串中所有字母异位词
@@ -85,6 +87,39 @@ var findAnagrams = function (s, p) {
     return ans
 };
 // console.log("findAnagrams====", findAnagrams("abcab", "ab"));
+
+/**
+ * 450. 删除二叉搜索树中的节点
+ * @tag 递归
+ * @param {TreeNode} root
+ * @param {number} key
+ * @return {TreeNode}
+ */
+var deleteNode = function (root, key) {
+    if (!root) return null
+
+    const findMax = (node) => !node.right ? node.val : findMax(node.right, node)
+    const findMin = (node) => !node.left ? node.val : findMin(node.left, node)
+
+    if (key > root.val) root.right = deleteNode(root.right, key)
+    else if (key < root.val) root.left = deleteNode(root.left, key)
+    else {
+        // 叶子节点，直接删除
+        if (root.left == null && root.right == null) root = null
+        // 存在右子节点
+        else if (root.right !== null) {
+            root.val = findMin(root.right) // 当前节点值替换为右侧最小的节点值
+            root.right = deleteNode(root.right, root.val) // 删除原右侧最小节点
+        }
+        // 存在左子节点  
+        else {
+            root.val = findMax(root.left) // 当前节点值替换为左侧最大节点值
+            root.left = deleteNode(root.left, root.val) // 删除原左侧最大节点
+        }
+    }
+    return root
+};
+console.log("deleteNode====", deleteNode(ArrayToTree([5, 3, 6, 2, 4, null, 7]), 5));
 
 /**
  * 459. 重复的子字符串

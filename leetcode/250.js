@@ -267,6 +267,16 @@ var invertTree = function (root) {
 // console.log("invertTree===" + tree);
 
 /**
+ * @param {TreeNode} root
+ * @param {number} k
+ * @return {number}
+ */
+var kthSmallest = function (root, k) {
+
+};
+console.log("kthSmallest===", kthSmallest(ArrayToTree([3, 1, 4, null, 2]), 1));
+
+/**
  * 234. 回文链表
  * @param {ListNode} head
  * @return {boolean}
