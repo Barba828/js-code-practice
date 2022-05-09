@@ -31,10 +31,10 @@ function ArrayToTree(array) {
     array[i] = array[i] === null ? array[i] : new TreeNode(array[i]);
     const location = i - size(layer - 1); //在当前层的位置
     const fatherIndex = Math.floor(location / 2) + size(layer - 2); //父节点在上层的数组下标位置
-    if (location % 2 === 0) {
+    if (location % 2 === 0 && array[fatherIndex]) {
       //左子节点
       array[fatherIndex].left = array[i];
-    } else {
+    } else if (array[fatherIndex]) {
       //右子节点
       array[fatherIndex].right = array[i];
     }

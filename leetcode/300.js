@@ -160,7 +160,6 @@ var deserialize = function (data) {
     return new TreeNode(Number(value), rdeserialize(order), rdeserialize(order))
   }
 
-  console.log(preorder);
   return rdeserialize(preorder)
 };
 // const serials = serialize(ArrayToTree([1, 2, 3, null, null, 4, 5]))
